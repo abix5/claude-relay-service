@@ -14,6 +14,10 @@ RUN --mount=type=cache,target=/root/.npm \
 # 🎯 前端构建阶段 (与后端依赖并行)
 FROM node:18-alpine AS frontend-builder
 
+# 🌐 设置默认本地化
+ARG VITE_DEFAULT_LOCALE=ru
+ENV VITE_DEFAULT_LOCALE=$VITE_DEFAULT_LOCALE
+
 # 📁 设置工作目录
 WORKDIR /app/web/admin-spa
 
@@ -24,7 +28,7 @@ COPY web/admin-spa/package*.json ./
 RUN --mount=type=cache,target=/root/.npm \
     npm ci
 
-# 📋 复制前端源代码
+# 📋 复制前端源代码 (включая файлы локализации)
 COPY web/admin-spa/ ./
 
 # 🏗️ 构建前端
@@ -32,6 +36,10 @@ RUN npm run build
 
 # 🐳 主应用阶段
 FROM node:18-alpine
+
+# 🌐 设置默认本地化 (для консистентности)
+ARG VITE_DEFAULT_LOCALE=ru
+ENV VITE_DEFAULT_LOCALE=$VITE_DEFAULT_LOCALE
 
 # 📋 设置标签
 LABEL maintainer="claude-relay-service@example.com"

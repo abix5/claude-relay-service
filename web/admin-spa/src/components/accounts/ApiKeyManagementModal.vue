@@ -95,7 +95,7 @@
                       @click="statusFilter = 'active'"
                     >
                       <i class="fas fa-check-circle mr-1" />
-                      正常 ({{ activeKeysCount }})
+                      {{ $t('apiKeyManagement.normal') }} ({{ activeKeysCount }})
                     </button>
                     <button
                       :class="[
@@ -169,20 +169,20 @@
                   <button
                     class="group rounded-md bg-gradient-to-r from-red-500 to-red-600 px-3 py-1.5 text-xs font-medium text-white shadow-sm transition-all hover:from-red-600 hover:to-red-700 hover:shadow disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:shadow-sm"
                     :disabled="errorKeysCount === 0 || batchDeleting"
-                    title="删除所有异常状态的 API Key"
+                    :title="$t('apiKeyManagement.deleteAbnormalTitle')"
                     @click="deleteAllErrorKeys"
                   >
                     <i class="fas fa-trash-alt mr-1" />
-                    删除异常
+                    {{ $t('apiKeyManagement.deleteAbnormal') }}
                   </button>
                   <button
                     class="group rounded-md bg-gradient-to-r from-red-600 to-red-700 px-3 py-1.5 text-xs font-medium text-white shadow-sm transition-all hover:from-red-700 hover:to-red-800 hover:shadow disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:shadow-sm"
                     :disabled="apiKeys.length === 0 || batchDeleting"
-                    title="删除所有 API Key"
+                    :title="$t('apiKeyManagement.deleteAllTitle')"
                     @click="deleteAllKeys"
                   >
                     <i class="fas fa-trash mr-1" />
-                    删除全部
+                    {{ $t('apiKeyManagement.deleteAll') }}
                   </button>
                   <div class="mx-1 h-5 w-px bg-gray-300 dark:bg-gray-600"></div>
                   <button
@@ -313,7 +313,7 @@
                       />
                       {{
                         apiKey.status === 'active'
-                          ? '正常'
+                          ? t('apiKeyManagement.normal')
                           : apiKey.status === 'error'
                             ? '异常'
                             : apiKey.status === 'disabled'
@@ -386,8 +386,11 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { showToast } from '@/utils/toast'
 import { apiClient } from '@/config/api'
+
+const { t } = useI18n()
 
 const props = defineProps({
   accountId: {
@@ -485,7 +488,7 @@ const loadApiKeys = async () => {
       try {
         parsedKeys = JSON.parse(account.apiKeys)
       } catch (error) {
-        console.error('Failed to parse apiKeys:', error)
+        /* ignored */
       }
     }
 
@@ -538,7 +541,6 @@ const loadApiKeys = async () => {
       return (b.usageCount || 0) - (a.usageCount || 0)
     })
   } catch (error) {
-    console.error('Failed to load API keys:', error)
     showToast('加载 API Key 失败', 'error')
   } finally {
     loading.value = false
@@ -549,7 +551,7 @@ const loadApiKeys = async () => {
 
 // 删除 API Key
 const deleteApiKey = async (apiKey) => {
-  if (!confirm(`确定要删除 API Key "${maskApiKey(apiKey.key)}" 吗？`)) {
+  if (!confirm(t('apiKeyManagement.deleteConfirm', { key: maskApiKey(apiKey.key) }))) {
     return
   }
 
@@ -563,12 +565,11 @@ const deleteApiKey = async (apiKey) => {
 
     await apiClient.put(`/admin/droid-accounts/${props.accountId}`, updateData)
 
-    showToast('API Key 已删除', 'success')
+    showToast(t('apiKeyManagement.deleted'), 'success')
     await loadApiKeys()
     emit('refresh')
   } catch (error) {
-    console.error('Failed to delete API key:', error)
-    showToast(error.response?.data?.error || '删除 API Key 失败', 'error')
+    showToast(error.response?.data?.error || t('apiKeyManagement.deleteFailed'), 'error')
   } finally {
     deleting.value = null
   }
@@ -576,11 +577,7 @@ const deleteApiKey = async (apiKey) => {
 
 // 重置 API Key 状态
 const resetApiKeyStatus = async (apiKey) => {
-  if (
-    !confirm(
-      `确定要重置 API Key "${maskApiKey(apiKey.key)}" 的状态吗？这将清除错误信息并恢复为正常状态。`
-    )
-  ) {
+  if (!confirm(t('apiKeyManagement.resetStatus', { key: maskApiKey(apiKey.key) }))) {
     return
   }
 
@@ -604,7 +601,6 @@ const resetApiKeyStatus = async (apiKey) => {
     await loadApiKeys()
     emit('refresh')
   } catch (error) {
-    console.error('Failed to reset API key status:', error)
     showToast(error.response?.data?.error || '重置 API Key 状态失败', 'error')
   } finally {
     resetting.value = null
@@ -615,11 +611,11 @@ const resetApiKeyStatus = async (apiKey) => {
 const deleteAllErrorKeys = async () => {
   const errorKeys = apiKeys.value.filter((key) => key.status === 'error')
   if (errorKeys.length === 0) {
-    showToast('没有异常状态的 API Key', 'warning')
+    showToast(t('apiKeyManagement.noErrorKeys'), 'warning')
     return
   }
 
-  if (!confirm(`确定要删除所有 ${errorKeys.length} 个异常状态的 API Key 吗？此操作不可恢复！`)) {
+  if (!confirm(t('apiKeyManagement.batchDeleteAbnormal', { count: errorKeys.length }))) {
     return
   }
 
@@ -633,12 +629,14 @@ const deleteAllErrorKeys = async () => {
 
     await apiClient.put(`/admin/droid-accounts/${props.accountId}`, updateData)
 
-    showToast(`成功删除 ${errorKeys.length} 个异常 API Key`, 'success')
+    showToast(
+      t('apiKeyManagement.batchDeleteAbnormalSuccess', { count: errorKeys.length }),
+      'success'
+    )
     await loadApiKeys()
     emit('refresh')
   } catch (error) {
-    console.error('Failed to delete error API keys:', error)
-    showToast(error.response?.data?.error || '批量删除失败', 'error')
+    showToast(error.response?.data?.error || t('apiKeyManagement.batchDeleteFailed'), 'error')
   } finally {
     batchDeleting.value = false
   }
@@ -647,20 +645,16 @@ const deleteAllErrorKeys = async () => {
 // 批量删除所有 Key
 const deleteAllKeys = async () => {
   if (apiKeys.value.length === 0) {
-    showToast('没有可删除的 API Key', 'warning')
+    showToast(t('apiKeyManagement.noKeys'), 'warning')
     return
   }
 
-  if (
-    !confirm(
-      `确定要删除所有 ${apiKeys.value.length} 个 API Key 吗？此操作不可恢复！\n\n请再次确认：这将删除该账户下的所有 API Key。`
-    )
-  ) {
+  if (!confirm(t('apiKeyManagement.deleteAllConfirm', { count: apiKeys.value.length }))) {
     return
   }
 
   // 二次确认
-  if (!confirm('最后确认：真的要删除所有 API Key 吗？')) {
+  if (!confirm(t('apiKeyManagement.deleteAllFinalConfirm'))) {
     return
   }
 
@@ -674,12 +668,11 @@ const deleteAllKeys = async () => {
 
     await apiClient.put(`/admin/droid-accounts/${props.accountId}`, updateData)
 
-    showToast(`成功删除所有 ${keysToDelete.length} 个 API Key`, 'success')
+    showToast(t('apiKeyManagement.deleteAllSuccess', { count: keysToDelete.length }), 'success')
     await loadApiKeys()
     emit('refresh')
   } catch (error) {
-    console.error('Failed to delete all API keys:', error)
-    showToast(error.response?.data?.error || '批量删除失败', 'error')
+    showToast(error.response?.data?.error || t('apiKeyManagement.batchDeleteFailed'), 'error')
   } finally {
     batchDeleting.value = false
   }
@@ -764,7 +757,6 @@ const copyApiKey = async (key) => {
     await writeToClipboard(key)
     showToast('API Key 已复制', 'success')
   } catch (error) {
-    console.error('Failed to copy:', error)
     showToast('复制失败，请手动复制', 'error')
   }
 }
@@ -781,7 +773,6 @@ const copyAllApiKeys = async () => {
     await writeToClipboard(allKeysText)
     showToast(`已复制 ${apiKeys.value.length} 条 API Key`, 'success')
   } catch (error) {
-    console.error('Failed to copy all keys:', error)
     showToast('复制全部 API Key 失败，请手动复制', 'error')
   } finally {
     copyingAll.value = false

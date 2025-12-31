@@ -12,7 +12,7 @@
               <i class="fas fa-edit text-sm text-white sm:text-base" />
             </div>
             <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 sm:text-xl">
-              编辑 API Key
+              {{ t('editApiKey.title') }}
             </h3>
           </div>
           <button
@@ -30,28 +30,28 @@
           <div>
             <label
               class="mb-1.5 block text-xs font-semibold text-gray-700 dark:text-gray-300 sm:mb-3 sm:text-sm"
-              >名称</label
+              >{{ t('editApiKey.nameLabel') }}</label
             >
             <div>
               <input
                 v-model="form.name"
                 class="form-input flex-1 border-gray-300 text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:placeholder-gray-400"
                 maxlength="100"
-                placeholder="请输入API Key名称"
+                :placeholder="t('editApiKey.namePlaceholder')"
                 required
                 type="text"
               />
             </div>
             <p class="mt-1 text-xs text-gray-500 dark:text-gray-400 sm:mt-2">
-              用于识别此 API Key 的用途
+              {{ t('editApiKey.keyNameDescription') }}
             </p>
           </div>
 
-          <!-- 所有者选择 -->
+          <!-- Owner Selection -->
           <div>
             <label
               class="mb-1.5 block text-xs font-semibold text-gray-700 dark:text-gray-300 sm:mb-3 sm:text-sm"
-              >所有者</label
+              >{{ t('editApiKey.ownerLabel') }}</label
             >
             <select
               v-model="form.ownerId"
@@ -59,25 +59,27 @@
             >
               <option v-for="user in availableUsers" :key="user.id" :value="user.id">
                 {{ user.displayName }} ({{ user.username }})
-                <span v-if="user.role === 'admin'" class="text-gray-500">- 管理员</span>
+                <span v-if="user.role === 'admin'" class="text-gray-500">{{
+                  t('editApiKey.adminSuffix')
+                }}</span>
               </option>
             </select>
             <p class="mt-1 text-xs text-gray-500 dark:text-gray-400 sm:mt-2">
-              分配此 API Key 给指定用户或管理员，管理员分配时不受用户 API Key 数量限制
+              {{ t('editApiKey.ownerDescription') }}
             </p>
           </div>
 
-          <!-- 标签 -->
+          <!-- Tags -->
           <div>
             <label
               class="mb-1.5 block text-xs font-semibold text-gray-700 dark:text-gray-300 sm:mb-3 sm:text-sm"
-              >标签</label
+              >{{ t('editApiKey.tagsLabel') }}</label
             >
             <div class="space-y-4">
-              <!-- 已选择的标签 -->
+              <!-- Selected Tags -->
               <div v-if="form.tags.length > 0">
                 <div class="mb-2 text-xs font-medium text-gray-600 dark:text-gray-400">
-                  已选择的标签:
+                  {{ t('editApiKey.selectedTags') }}
                 </div>
                 <div class="flex flex-wrap gap-2">
                   <span
@@ -97,10 +99,10 @@
                 </div>
               </div>
 
-              <!-- 可选择的已有标签 -->
+              <!-- Available Existing Tags -->
               <div v-if="unselectedTags.length > 0">
                 <div class="mb-2 text-xs font-medium text-gray-600 dark:text-gray-400">
-                  点击选择已有标签:
+                  {{ t('editApiKey.clickToSelectTags') }}
                 </div>
                 <div class="flex flex-wrap gap-2">
                   <button
@@ -116,16 +118,16 @@
                 </div>
               </div>
 
-              <!-- 创建新标签 -->
+              <!-- Create New Tag -->
               <div>
                 <div class="mb-2 text-xs font-medium text-gray-600 dark:text-gray-400">
-                  创建新标签:
+                  {{ t('editApiKey.createNewTag') }}
                 </div>
                 <div class="flex gap-2">
                   <input
                     v-model="newTag"
                     class="form-input flex-1 border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:placeholder-gray-400"
-                    placeholder="输入新标签名称"
+                    :placeholder="t('editApiKey.enterNewTagName')"
                     type="text"
                     @keypress.enter.prevent="addTag"
                   />
@@ -140,12 +142,12 @@
               </div>
 
               <p class="text-xs text-gray-500 dark:text-gray-400">
-                用于标记不同团队或用途，方便筛选管理
+                {{ t('editApiKey.tagsDescription') }}
               </p>
             </div>
           </div>
 
-          <!-- 速率限制设置 -->
+          <!-- Rate Limit Settings -->
           <div
             class="rounded-lg border border-blue-200 bg-blue-50 p-3 dark:border-blue-700 dark:bg-blue-900/20"
           >
@@ -156,68 +158,76 @@
                 <i class="fas fa-tachometer-alt text-xs text-white" />
               </div>
               <h4 class="text-sm font-semibold text-gray-800 dark:text-gray-200">
-                速率限制设置 (可选)
+                {{ t('editApiKey.rateLimitSettings') }}
               </h4>
             </div>
 
             <div class="space-y-2">
               <div class="grid grid-cols-1 gap-2 lg:grid-cols-3">
                 <div>
-                  <label class="mb-1 block text-xs font-medium text-gray-700 dark:text-gray-300"
-                    >时间窗口 (分钟)</label
-                  >
+                  <label class="mb-1 block text-xs font-medium text-gray-700 dark:text-gray-300">{{
+                    t('editApiKey.timeWindowMinutes')
+                  }}</label>
                   <input
                     v-model="form.rateLimitWindow"
                     class="form-input w-full border-gray-300 text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:placeholder-gray-400"
                     min="1"
-                    placeholder="无限制"
+                    :placeholder="t('editApiKey.unlimitedOption')"
                     type="number"
                   />
-                  <p class="ml-2 mt-0.5 text-xs text-gray-500 dark:text-gray-400">时间段单位</p>
+                  <p class="ml-2 mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+                    {{ t('editApiKey.timePeriodUnit') }}
+                  </p>
                 </div>
 
                 <div>
-                  <label class="mb-1 block text-xs font-medium text-gray-700 dark:text-gray-300"
-                    >请求次数限制</label
-                  >
+                  <label class="mb-1 block text-xs font-medium text-gray-700 dark:text-gray-300">{{
+                    t('editApiKey.requestCountLimit')
+                  }}</label>
                   <input
                     v-model="form.rateLimitRequests"
                     class="form-input w-full border-gray-300 text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:placeholder-gray-400"
                     min="1"
-                    placeholder="无限制"
+                    :placeholder="t('editApiKey.unlimitedOption')"
                     type="number"
                   />
-                  <p class="ml-2 mt-0.5 text-xs text-gray-500 dark:text-gray-400">窗口内最大请求</p>
+                  <p class="ml-2 mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+                    {{ t('editApiKey.maxRequestsInWindow') }}
+                  </p>
                 </div>
 
                 <div>
-                  <label class="mb-1 block text-xs font-medium text-gray-700 dark:text-gray-300"
-                    >费用限制 (美元)</label
-                  >
+                  <label class="mb-1 block text-xs font-medium text-gray-700 dark:text-gray-300">{{
+                    t('editApiKey.costLimitUsd')
+                  }}</label>
                   <input
                     v-model="form.rateLimitCost"
                     class="form-input w-full border-gray-300 text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:placeholder-gray-400"
                     min="0"
-                    placeholder="无限制"
+                    :placeholder="t('editApiKey.unlimitedOption')"
                     step="0.01"
                     type="number"
                   />
-                  <p class="ml-2 mt-0.5 text-xs text-gray-500 dark:text-gray-400">窗口内最大费用</p>
+                  <p class="ml-2 mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+                    {{ t('editApiKey.maxCostInWindow') }}
+                  </p>
                 </div>
               </div>
 
-              <!-- 示例说明 -->
+              <!-- Examples section -->
               <div class="rounded-lg bg-blue-100 p-2 dark:bg-blue-900/30">
                 <h5 class="mb-1 text-xs font-semibold text-blue-800 dark:text-blue-400">
-                  💡 使用示例
+                  {{ t('editApiKey.usageExamplesTitle') }}
                 </h5>
                 <div class="space-y-0.5 text-xs text-blue-700 dark:text-blue-300">
                   <div>
-                    <strong>示例1:</strong> 时间窗口=60，请求次数=1000 → 每60分钟最多1000次请求
+                    <strong>{{ t('editApiKey.example1') }}</strong>
                   </div>
-                  <div><strong>示例2:</strong> 时间窗口=1，费用=0.1 → 每分钟最多$0.1费用</div>
                   <div>
-                    <strong>示例3:</strong> 窗口=30，请求=50，费用=5 → 每30分钟50次请求且不超$5费用
+                    <strong>{{ t('editApiKey.example2') }}</strong>
+                  </div>
+                  <div>
+                    <strong>{{ t('editApiKey.example3') }}</strong>
                   </div>
                 </div>
               </div>
@@ -225,9 +235,9 @@
           </div>
 
           <div>
-            <label class="mb-3 block text-sm font-semibold text-gray-700 dark:text-gray-300"
-              >每日费用限制 (美元)</label
-            >
+            <label class="mb-3 block text-sm font-semibold text-gray-700 dark:text-gray-300">{{
+              t('editApiKey.dailyCostLimitUsd')
+            }}</label>
             <div class="space-y-3">
               <div class="flex gap-2">
                 <button
@@ -256,27 +266,27 @@
                   type="button"
                   @click="form.dailyCostLimit = ''"
                 >
-                  自定义
+                  {{ t('editApiKey.custom') }}
                 </button>
               </div>
               <input
                 v-model="form.dailyCostLimit"
                 class="form-input w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:placeholder-gray-400"
                 min="0"
-                placeholder="0 表示无限制"
+                :placeholder="t('editApiKey.zeroMeansUnlimited')"
                 step="0.01"
                 type="number"
               />
               <p class="text-xs text-gray-500 dark:text-gray-400">
-                设置此 API Key 每日的费用限制，超过限制将拒绝请求，0 或留空表示无限制
+                {{ t('editApiKey.dailyCostLimitDesc') }}
               </p>
             </div>
           </div>
 
           <div>
-            <label class="mb-3 block text-sm font-semibold text-gray-700 dark:text-gray-300"
-              >总费用限制 (美元)</label
-            >
+            <label class="mb-3 block text-sm font-semibold text-gray-700 dark:text-gray-300">{{
+              t('editApiKey.totalCostLimitUsd')
+            }}</label>
             <div class="space-y-3">
               <div class="flex gap-2">
                 <button
@@ -305,27 +315,27 @@
                   type="button"
                   @click="form.totalCostLimit = ''"
                 >
-                  自定义
+                  {{ t('editApiKey.custom') }}
                 </button>
               </div>
               <input
                 v-model="form.totalCostLimit"
                 class="form-input w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:placeholder-gray-400"
                 min="0"
-                placeholder="0 表示无限制"
+                :placeholder="t('editApiKey.zeroMeansUnlimited')"
                 step="0.01"
                 type="number"
               />
               <p class="text-xs text-gray-500 dark:text-gray-400">
-                设置此 API Key 的累计总费用限制，达到限制后将拒绝所有后续请求，0 或留空表示无限制
+                {{ t('editApiKey.totalCostLimitDesc') }}
               </p>
             </div>
           </div>
 
           <div>
-            <label class="mb-3 block text-sm font-semibold text-gray-700 dark:text-gray-300"
-              >Opus 模型周费用限制 (美元)</label
-            >
+            <label class="mb-3 block text-sm font-semibold text-gray-700 dark:text-gray-300">{{
+              t('editApiKey.opusWeeklyCostLimitUsd')
+            }}</label>
             <div class="space-y-3">
               <div class="flex gap-2">
                 <button
@@ -354,40 +364,40 @@
                   type="button"
                   @click="form.weeklyOpusCostLimit = ''"
                 >
-                  自定义
+                  {{ t('editApiKey.custom') }}
                 </button>
               </div>
               <input
                 v-model="form.weeklyOpusCostLimit"
                 class="form-input w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:placeholder-gray-400"
                 min="0"
-                placeholder="0 表示无限制"
+                :placeholder="t('editApiKey.zeroMeansUnlimited')"
                 step="0.01"
                 type="number"
               />
               <p class="text-xs text-gray-500 dark:text-gray-400">
-                设置 Opus 模型的周费用限制（周一到周日），仅限 Claude 官方账户，0 或留空表示无限制
+                {{ t('editApiKey.opusWeeklyCostLimitDesc') }}
               </p>
             </div>
           </div>
 
           <div>
-            <label class="mb-3 block text-sm font-semibold text-gray-700 dark:text-gray-300"
-              >并发限制</label
-            >
+            <label class="mb-3 block text-sm font-semibold text-gray-700 dark:text-gray-300">{{
+              t('editApiKey.concurrencyLimitLabel')
+            }}</label>
             <input
               v-model="form.concurrencyLimit"
               class="form-input w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:placeholder-gray-400"
               min="0"
-              placeholder="0 表示无限制"
+              :placeholder="t('editApiKey.zeroMeansUnlimited')"
               type="number"
             />
             <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
-              设置此 API Key 可同时处理的最大请求数
+              {{ t('editApiKey.concurrencyLimitDesc') }}
             </p>
           </div>
 
-          <!-- 激活账号 -->
+          <!-- Activate Account -->
           <div>
             <div class="mb-3 flex items-center">
               <input
@@ -400,18 +410,18 @@
                 class="ml-2 cursor-pointer text-sm font-semibold text-gray-700 dark:text-gray-300"
                 for="editIsActive"
               >
-                激活账号
+                {{ t('editApiKey.activateAccount') }}
               </label>
             </div>
             <p class="mb-4 text-xs text-gray-500 dark:text-gray-400">
-              取消勾选将禁用此 API Key，暂停所有请求，客户端返回 401 错误
+              {{ t('editApiKey.activateAccountDesc') }}
             </p>
           </div>
 
           <div>
-            <label class="mb-3 block text-sm font-semibold text-gray-700 dark:text-gray-300"
-              >服务权限</label
-            >
+            <label class="mb-3 block text-sm font-semibold text-gray-700 dark:text-gray-300">{{
+              t('editApiKey.servicePermissionsLabel')
+            }}</label>
             <div class="flex gap-4">
               <label class="flex cursor-pointer items-center">
                 <input
@@ -420,7 +430,9 @@
                   type="radio"
                   value="all"
                 />
-                <span class="text-sm text-gray-700 dark:text-gray-300">全部服务</span>
+                <span class="text-sm text-gray-700 dark:text-gray-300">{{
+                  t('editApiKey.allServicesOption')
+                }}</span>
               </label>
               <label class="flex cursor-pointer items-center">
                 <input
@@ -429,7 +441,9 @@
                   type="radio"
                   value="claude"
                 />
-                <span class="text-sm text-gray-700 dark:text-gray-300">仅 Claude</span>
+                <span class="text-sm text-gray-700 dark:text-gray-300">{{
+                  t('editApiKey.claudeOnlyOption')
+                }}</span>
               </label>
               <label class="flex cursor-pointer items-center">
                 <input
@@ -438,7 +452,9 @@
                   type="radio"
                   value="gemini"
                 />
-                <span class="text-sm text-gray-700 dark:text-gray-300">仅 Gemini</span>
+                <span class="text-sm text-gray-700 dark:text-gray-300">{{
+                  t('editApiKey.geminiOnlyOption')
+                }}</span>
               </label>
               <label class="flex cursor-pointer items-center">
                 <input
@@ -447,7 +463,9 @@
                   type="radio"
                   value="openai"
                 />
-                <span class="text-sm text-gray-700 dark:text-gray-300">仅 OpenAI</span>
+                <span class="text-sm text-gray-700 dark:text-gray-300">{{
+                  t('editApiKey.openaiOnlyOption')
+                }}</span>
               </label>
               <label class="flex cursor-pointer items-center">
                 <input
@@ -456,23 +474,25 @@
                   type="radio"
                   value="droid"
                 />
-                <span class="text-sm text-gray-700 dark:text-gray-300">仅 Droid</span>
+                <span class="text-sm text-gray-700 dark:text-gray-300">{{
+                  t('editApiKey.droidOnlyOption')
+                }}</span>
               </label>
             </div>
             <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
-              控制此 API Key 可以访问哪些服务
+              {{ t('editApiKey.servicePermissionsDesc') }}
             </p>
           </div>
 
           <div>
             <div class="mb-3 flex items-center justify-between">
-              <label class="text-sm font-semibold text-gray-700 dark:text-gray-300"
-                >专属账号绑定</label
-              >
+              <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">{{
+                t('editApiKey.dedicatedAccountBindingLabel')
+              }}</label>
               <button
                 class="flex items-center gap-1 text-sm text-blue-600 transition-colors hover:text-blue-800 disabled:cursor-not-allowed disabled:opacity-50 dark:text-blue-400 dark:hover:text-blue-300"
                 :disabled="accountsLoading"
-                title="刷新账号列表"
+                :title="t('editApiKey.refreshAccountsButton')"
                 type="button"
                 @click="refreshAccounts"
               >
@@ -483,83 +503,87 @@
                     'text-xs'
                   ]"
                 />
-                <span>{{ accountsLoading ? '刷新中...' : '刷新账号' }}</span>
+                <span>{{
+                  accountsLoading
+                    ? t('editApiKey.refreshingText')
+                    : t('editApiKey.refreshAccountsButton')
+                }}</span>
               </button>
             </div>
             <div class="grid grid-cols-1 gap-3">
               <div>
-                <label class="mb-1 block text-sm font-medium text-gray-600 dark:text-gray-400"
-                  >Claude 专属账号</label
-                >
+                <label class="mb-1 block text-sm font-medium text-gray-600 dark:text-gray-400">{{
+                  t('editApiKey.claudeDedicatedAccountLabel')
+                }}</label>
                 <AccountSelector
                   v-model="form.claudeAccountId"
                   :accounts="localAccounts.claude"
-                  default-option-text="使用共享账号池"
+                  :default-option-text="t('editApiKey.useSharedAccountPool')"
                   :disabled="form.permissions !== 'all' && form.permissions !== 'claude'"
                   :groups="localAccounts.claudeGroups"
-                  placeholder="请选择Claude账号"
+                  :placeholder="t('editApiKey.selectClaudeAccount')"
                   platform="claude"
                 />
               </div>
               <div>
-                <label class="mb-1 block text-sm font-medium text-gray-600 dark:text-gray-400"
-                  >Gemini 专属账号</label
-                >
+                <label class="mb-1 block text-sm font-medium text-gray-600 dark:text-gray-400">{{
+                  t('editApiKey.geminiDedicatedAccountLabel')
+                }}</label>
                 <AccountSelector
                   v-model="form.geminiAccountId"
                   :accounts="localAccounts.gemini"
-                  default-option-text="使用共享账号池"
+                  :default-option-text="t('editApiKey.useSharedAccountPool')"
                   :disabled="form.permissions !== 'all' && form.permissions !== 'gemini'"
                   :groups="localAccounts.geminiGroups"
-                  placeholder="请选择Gemini账号"
+                  :placeholder="t('editApiKey.selectGeminiAccount')"
                   platform="gemini"
                 />
               </div>
               <div>
-                <label class="mb-1 block text-sm font-medium text-gray-600 dark:text-gray-400"
-                  >OpenAI 专属账号</label
-                >
+                <label class="mb-1 block text-sm font-medium text-gray-600 dark:text-gray-400">{{
+                  t('editApiKey.openaiDedicatedAccountLabel')
+                }}</label>
                 <AccountSelector
                   v-model="form.openaiAccountId"
                   :accounts="localAccounts.openai"
-                  default-option-text="使用共享账号池"
+                  :default-option-text="t('editApiKey.useSharedAccountPool')"
                   :disabled="form.permissions !== 'all' && form.permissions !== 'openai'"
                   :groups="localAccounts.openaiGroups"
-                  placeholder="请选择OpenAI账号"
+                  :placeholder="t('editApiKey.selectOpenAIAccount')"
                   platform="openai"
                 />
               </div>
               <div>
-                <label class="mb-1 block text-sm font-medium text-gray-600 dark:text-gray-400"
-                  >Bedrock 专属账号</label
-                >
+                <label class="mb-1 block text-sm font-medium text-gray-600 dark:text-gray-400">{{
+                  t('editApiKey.bedrockDedicatedAccountLabel')
+                }}</label>
                 <AccountSelector
                   v-model="form.bedrockAccountId"
                   :accounts="localAccounts.bedrock"
-                  default-option-text="使用共享账号池"
+                  :default-option-text="t('editApiKey.useSharedAccountPool')"
                   :disabled="form.permissions !== 'all' && form.permissions !== 'openai'"
                   :groups="[]"
-                  placeholder="请选择Bedrock账号"
+                  :placeholder="t('editApiKey.selectBedrockAccount')"
                   platform="bedrock"
                 />
               </div>
               <div>
-                <label class="mb-1 block text-sm font-medium text-gray-600 dark:text-gray-400"
-                  >Droid 专属账号</label
-                >
+                <label class="mb-1 block text-sm font-medium text-gray-600 dark:text-gray-400">{{
+                  t('editApiKey.droidDedicatedAccountLabel')
+                }}</label>
                 <AccountSelector
                   v-model="form.droidAccountId"
                   :accounts="localAccounts.droid"
-                  default-option-text="使用共享账号池"
+                  :default-option-text="t('editApiKey.useSharedAccountPool')"
                   :disabled="form.permissions !== 'all' && form.permissions !== 'droid'"
                   :groups="localAccounts.droidGroups"
-                  placeholder="请选择Droid账号"
+                  :placeholder="t('editApiKey.selectDroidAccount')"
                   platform="droid"
                 />
               </div>
             </div>
             <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
-              修改绑定账号将影响此API Key的请求路由
+              {{ t('editApiKey.modifyBindingWarning') }}
             </p>
           </div>
 
@@ -575,15 +599,15 @@
                 class="ml-2 cursor-pointer text-sm font-semibold text-gray-700 dark:text-gray-300"
                 for="editEnableModelRestriction"
               >
-                启用模型限制
+                {{ t('editApiKey.enableModelRestrictionToggle') }}
               </label>
             </div>
 
             <div v-if="form.enableModelRestriction" class="space-y-3">
               <div>
-                <label class="mb-2 block text-sm font-medium text-gray-600 dark:text-gray-400"
-                  >限制的模型列表</label
-                >
+                <label class="mb-2 block text-sm font-medium text-gray-600 dark:text-gray-400">{{
+                  t('createApiKey.restrictedModelsListLabel')
+                }}</label>
                 <div
                   class="mb-3 flex min-h-[32px] flex-wrap gap-2 rounded-lg border border-gray-200 bg-gray-50 p-2 dark:border-gray-600 dark:bg-gray-700"
                 >
@@ -605,11 +629,11 @@
                     v-if="form.restrictedModels.length === 0"
                     class="text-sm text-gray-400 dark:text-gray-500"
                   >
-                    暂无限制的模型
+                    {{ t('createApiKey.noRestrictedModelsText') }}
                   </span>
                 </div>
                 <div class="space-y-3">
-                  <!-- 快速添加按钮 -->
+                  <!-- Quick Add Buttons -->
                   <div class="flex flex-wrap gap-2">
                     <button
                       v-for="model in availableQuickModels"
@@ -624,16 +648,16 @@
                       v-if="availableQuickModels.length === 0"
                       class="text-sm italic text-gray-400 dark:text-gray-500"
                     >
-                      所有常用模型已在限制列表中
+                      {{ t('createApiKey.allCommonModelsRestricted') }}
                     </span>
                   </div>
 
-                  <!-- 手动输入 -->
+                  <!-- Manual Input -->
                   <div class="flex gap-2">
                     <input
                       v-model="form.modelInput"
                       class="form-input flex-1 border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:placeholder-gray-400"
-                      placeholder="输入模型名称，按回车添加"
+                      :placeholder="t('editApiKey.enterModelNamePressEnter')"
                       type="text"
                       @keydown.enter.prevent="addRestrictedModel"
                     />
@@ -647,13 +671,13 @@
                   </div>
                 </div>
                 <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                  设置此API Key无法访问的模型，例如：claude-opus-4-20250514
+                  {{ t('createApiKey.setRestrictedModelsDesc') }}
                 </p>
               </div>
             </div>
           </div>
 
-          <!-- 客户端限制 -->
+          <!-- Client Restriction -->
           <div>
             <div class="mb-3 flex items-center">
               <input
@@ -666,17 +690,17 @@
                 class="ml-2 cursor-pointer text-sm font-semibold text-gray-700 dark:text-gray-300"
                 for="editEnableClientRestriction"
               >
-                启用客户端限制
+                {{ t('editApiKey.enableClientRestrictionToggle') }}
               </label>
             </div>
 
             <div v-if="form.enableClientRestriction" class="space-y-3">
               <div>
-                <label class="mb-2 block text-sm font-medium text-gray-600 dark:text-gray-400"
-                  >允许的客户端</label
-                >
+                <label class="mb-2 block text-sm font-medium text-gray-600 dark:text-gray-400">{{
+                  t('createApiKey.allowedClients')
+                }}</label>
                 <p class="mb-3 text-xs text-gray-500 dark:text-gray-400">
-                  勾选允许使用此API Key的客户端
+                  {{ t('editApiKey.allowedClientsHelper') }}
                 </p>
                 <div class="space-y-2">
                   <div v-for="client in supportedClients" :key="client.id" class="flex items-start">
@@ -707,7 +731,7 @@
               type="button"
               @click="$emit('close')"
             >
-              取消
+              {{ t('editApiKey.cancel') }}
             </button>
             <button
               class="btn btn-primary flex-1 px-6 py-3 font-semibold"
@@ -716,7 +740,7 @@
             >
               <div v-if="loading" class="loading-spinner mr-2" />
               <i v-else class="fas fa-save mr-2" />
-              {{ loading ? '保存中...' : '保存修改' }}
+              {{ loading ? t('editApiKey.saving') : t('editApiKey.saveChanges') }}
             </button>
           </div>
         </form>
@@ -727,11 +751,14 @@
 
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { showToast } from '@/utils/toast'
 import { useClientsStore } from '@/stores/clients'
 import { useApiKeysStore } from '@/stores/apiKeys'
 import { apiClient } from '@/config/api'
 import AccountSelector from '@/components/common/AccountSelector.vue'
+
+const { t } = useI18n()
 
 const props = defineProps({
   apiKey: {
@@ -774,28 +801,28 @@ const localAccounts = ref({
   droidGroups: []
 })
 
-// 支持的客户端列表
+// Supported clients list
 const supportedClients = ref([])
 
-// 可用用户列表
+// Available users list
 const availableUsers = ref([])
 
-// 标签相关
+// Tags related
 const newTag = ref('')
 const availableTags = ref([])
 
-// 计算未选择的标签
+// Compute unselected tags
 const unselectedTags = computed(() => {
   return availableTags.value.filter((tag) => !form.tags.includes(tag))
 })
 
-// 表单数据
+// Form data
 const form = reactive({
   name: '',
-  tokenLimit: '', // 保留用于检测历史数据
+  tokenLimit: '', // Keep for historical data detection
   rateLimitWindow: '',
   rateLimitRequests: '',
-  rateLimitCost: '', // 新增：费用限制
+  rateLimitCost: '', // New: Cost limit
   concurrencyLimit: '',
   dailyCostLimit: '',
   totalCostLimit: '',
@@ -813,10 +840,10 @@ const form = reactive({
   allowedClients: [],
   tags: [],
   isActive: true,
-  ownerId: '' // 新增：所有者ID
+  ownerId: '' // New: Owner ID
 })
 
-// 添加限制的模型
+// Add restricted model
 const addRestrictedModel = () => {
   if (form.modelInput && !form.restrictedModels.includes(form.modelInput)) {
     form.restrictedModels.push(form.modelInput)
@@ -824,20 +851,20 @@ const addRestrictedModel = () => {
   }
 }
 
-// 移除限制的模型
+// Remove restricted model
 const removeRestrictedModel = (index) => {
   form.restrictedModels.splice(index, 1)
 }
 
-// 常用模型列表
+// Common models list
 const commonModels = ref(['claude-opus-4-20250514', 'claude-opus-4-1-20250805'])
 
-// 可用的快捷模型（过滤掉已在限制列表中的）
+// Available quick models (filtered out those already in restriction list)
 const availableQuickModels = computed(() => {
   return commonModels.value.filter((model) => !form.restrictedModels.includes(model))
 })
 
-// 快速添加限制的模型
+// Quick add restricted model
 const quickAddRestrictedModel = (model) => {
   if (!form.restrictedModels.includes(model)) {
     form.restrictedModels.push(model)
@@ -872,14 +899,14 @@ const updateApiKey = async () => {
     let confirmed = false
     if (window.showConfirm) {
       confirmed = await window.showConfirm(
-        '费用限制提醒',
-        '您设置了时间窗口但费用限制为0，这意味着不会有费用限制。\n\n是否继续？',
-        '继续保存',
-        '返回修改'
+        t('editApiKey.costLimitWarningTitle'),
+        t('editApiKey.costLimitWarningMessage'),
+        t('editApiKey.continueToSave'),
+        t('editApiKey.backToModify')
       )
     } else {
       // 降级方案
-      confirmed = confirm('您设置了时间窗口但费用限制为0，这意味着不会有费用限制。\n是否继续？')
+      confirmed = confirm(t('editApiKey.costLimitWarningSimple'))
     }
     if (!confirmed) {
       return
@@ -995,16 +1022,16 @@ const updateApiKey = async () => {
       emit('success')
       emit('close')
     } else {
-      showToast(result.message || '更新失败', 'error')
+      showToast(result.message || t('editApiKey.updateFailed'), 'error')
     }
   } catch (error) {
-    showToast('更新失败', 'error')
+    showToast(t('editApiKey.updateFailed'), 'error')
   } finally {
     loading.value = false
   }
 }
 
-// 刷新账号列表
+// {{ t("editApiKey.refreshAccountsButton") }}列表
 const refreshAccounts = async () => {
   accountsLoading.value = true
   try {
@@ -1129,9 +1156,9 @@ const refreshAccounts = async () => {
       localAccounts.value.droidGroups = allGroups.filter((g) => g.platform === 'droid')
     }
 
-    showToast('账号列表已刷新', 'success')
+    showToast(t('editApiKey.accountsRefreshed'), 'success')
   } catch (error) {
-    showToast('刷新账号列表失败', 'error')
+    showToast(t('editApiKey.refreshAccountsFailed'), 'error')
   } finally {
     accountsLoading.value = false
   }

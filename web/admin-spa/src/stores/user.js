@@ -64,7 +64,7 @@ export const useUserStore = defineStore('user', {
           )
         }
       } catch (error) {
-        console.error('Logout request failed:', error)
+        /* ignored */
       } finally {
         this.clearAuth()
       }
@@ -92,7 +92,6 @@ export const useUserStore = defineStore('user', {
         await this.getUserProfile()
         return true
       } catch (error) {
-        console.error('Auth check failed:', error)
         this.clearAuth()
         return false
       }
@@ -125,50 +124,30 @@ export const useUserStore = defineStore('user', {
 
     // 🔑 获取用户API Keys
     async getUserApiKeys(includeDeleted = false) {
-      try {
-        const params = {}
-        if (includeDeleted) {
-          params.includeDeleted = 'true'
-        }
-        const response = await axios.get(`${API_BASE}/api-keys`, { params })
-        return response.data.success ? response.data.apiKeys : []
-      } catch (error) {
-        console.error('Failed to fetch API keys:', error)
-        throw error
+      const params = {}
+      if (includeDeleted) {
+        params.includeDeleted = 'true'
       }
+      const response = await axios.get(`${API_BASE}/api-keys`, { params })
+      return response.data.success ? response.data.apiKeys : []
     },
 
     // 🔑 创建API Key
     async createApiKey(keyData) {
-      try {
-        const response = await axios.post(`${API_BASE}/api-keys`, keyData)
-        return response.data
-      } catch (error) {
-        console.error('Failed to create API key:', error)
-        throw error
-      }
+      const response = await axios.post(`${API_BASE}/api-keys`, keyData)
+      return response.data
     },
 
     // 🗑️ 删除API Key
     async deleteApiKey(keyId) {
-      try {
-        const response = await axios.delete(`${API_BASE}/api-keys/${keyId}`)
-        return response.data
-      } catch (error) {
-        console.error('Failed to delete API key:', error)
-        throw error
-      }
+      const response = await axios.delete(`${API_BASE}/api-keys/${keyId}`)
+      return response.data
     },
 
     // 📊 获取使用统计
     async getUserUsageStats(params = {}) {
-      try {
-        const response = await axios.get(`${API_BASE}/usage-stats`, { params })
-        return response.data.success ? response.data.stats : null
-      } catch (error) {
-        console.error('Failed to fetch usage stats:', error)
-        throw error
-      }
+      const response = await axios.get(`${API_BASE}/usage-stats`, { params })
+      return response.data.success ? response.data.stats : null
     },
 
     // 🧹 清除认证信息

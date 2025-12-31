@@ -6,7 +6,10 @@ version: '3.8'
 services:
   # 🚀 Claude Relay Service
   claude-relay:
-    build: .
+    build:
+      context: .
+      args:
+        VITE_DEFAULT_LOCALE: ru
     image: weishaw/claude-relay-service:latest
     restart: unless-stopped
     ports:
@@ -72,6 +75,9 @@ services:
       - WEB_TITLE=${WEB_TITLE:-Claude Relay Service}
       - WEB_DESCRIPTION=${WEB_DESCRIPTION:-Multi-account Claude API relay service}
       - WEB_LOGO_URL=${WEB_LOGO_URL:-/assets/logo.png}
+
+      # 🌐 Локализация
+      - VITE_DEFAULT_LOCALE=ru
       
       # 🛠️ 开发配置
       - DEBUG=${DEBUG:-false}

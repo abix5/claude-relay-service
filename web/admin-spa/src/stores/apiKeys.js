@@ -144,7 +144,6 @@ export const useApiKeysStore = defineStore('apiKeys', () => {
         throw new Error(response.message || '获取统计失败')
       }
     } catch (err) {
-      console.error('获取API Key统计失败:', err)
       return null
     }
   }
@@ -169,7 +168,6 @@ export const useApiKeysStore = defineStore('apiKeys', () => {
         throw new Error(response.message || '获取标签失败')
       }
     } catch (err) {
-      console.error('获取标签失败:', err)
       return []
     }
   }

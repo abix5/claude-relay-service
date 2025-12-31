@@ -2,8 +2,8 @@
   <div class="space-y-6">
     <div class="sm:flex sm:items-center">
       <div class="sm:flex-auto">
-        <h1 class="text-2xl font-semibold text-gray-900">Usage Statistics</h1>
-        <p class="mt-2 text-sm text-gray-700">View your API usage statistics and costs</p>
+        <h1 class="text-2xl font-semibold text-gray-900">{{ t('user.usageStats.title') }}</h1>
+        <p class="mt-2 text-sm text-gray-700">{{ t('user.usageStats.description') }}</p>
       </div>
       <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
         <select
@@ -11,10 +11,10 @@
           class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
           @change="loadUsageStats"
         >
-          <option value="day">Last 24 Hours</option>
-          <option value="week">Last 7 Days</option>
-          <option value="month">Last 30 Days</option>
-          <option value="quarter">Last 90 Days</option>
+          <option value="day">{{ t('user.usageStats.last24Hours') }}</option>
+          <option value="week">{{ t('user.usageStats.last7Days') }}</option>
+          <option value="month">{{ t('user.usageStats.last30Days') }}</option>
+          <option value="quarter">{{ t('user.usageStats.last90Days') }}</option>
         </select>
       </div>
     </div>
@@ -41,7 +41,7 @@
           fill="currentColor"
         ></path>
       </svg>
-      <p class="mt-2 text-sm text-gray-500">Loading usage statistics...</p>
+      <p class="mt-2 text-sm text-gray-500">{{ t('user.usageStats.loadingStats') }}</p>
     </div>
 
     <!-- Stats Cards -->
@@ -66,7 +66,9 @@
             </div>
             <div class="ml-5 w-0 flex-1">
               <dl>
-                <dt class="truncate text-sm font-medium text-gray-500">Total Requests</dt>
+                <dt class="truncate text-sm font-medium text-gray-500">
+                  {{ t('user.usageStats.totalRequests') }}
+                </dt>
                 <dd class="text-lg font-medium text-gray-900">
                   {{ formatNumber(usageStats?.totalRequests || 0) }}
                 </dd>
@@ -96,7 +98,9 @@
             </div>
             <div class="ml-5 w-0 flex-1">
               <dl>
-                <dt class="truncate text-sm font-medium text-gray-500">Input Tokens</dt>
+                <dt class="truncate text-sm font-medium text-gray-500">
+                  {{ t('user.usageStats.inputTokens') }}
+                </dt>
                 <dd class="text-lg font-medium text-gray-900">
                   {{ formatNumber(usageStats?.totalInputTokens || 0) }}
                 </dd>
@@ -126,7 +130,9 @@
             </div>
             <div class="ml-5 w-0 flex-1">
               <dl>
-                <dt class="truncate text-sm font-medium text-gray-500">Output Tokens</dt>
+                <dt class="truncate text-sm font-medium text-gray-500">
+                  {{ t('user.usageStats.outputTokens') }}
+                </dt>
                 <dd class="text-lg font-medium text-gray-900">
                   {{ formatNumber(usageStats?.totalOutputTokens || 0) }}
                 </dd>
@@ -156,7 +162,9 @@
             </div>
             <div class="ml-5 w-0 flex-1">
               <dl>
-                <dt class="truncate text-sm font-medium text-gray-500">Total Cost</dt>
+                <dt class="truncate text-sm font-medium text-gray-500">
+                  {{ t('user.usageStats.totalCost') }}
+                </dt>
                 <dd class="text-lg font-medium text-gray-900">
                   ${{ (usageStats?.totalCost || 0).toFixed(4) }}
                 </dd>
@@ -170,7 +178,9 @@
     <!-- Daily Usage Chart -->
     <div v-if="!loading && usageStats" class="rounded-lg bg-white shadow">
       <div class="px-4 py-5 sm:p-6">
-        <h3 class="mb-4 text-lg font-medium leading-6 text-gray-900">Daily Usage Trend</h3>
+        <h3 class="mb-4 text-lg font-medium leading-6 text-gray-900">
+          {{ t('user.usageStats.dailyUsageTrend') }}
+        </h3>
 
         <!-- Placeholder for chart - you can integrate Chart.js or similar -->
         <div
@@ -190,10 +200,14 @@
                 stroke-width="2"
               />
             </svg>
-            <h3 class="mt-2 text-sm font-medium text-gray-900">Usage Chart</h3>
-            <p class="mt-1 text-sm text-gray-500">Daily usage trends would be displayed here</p>
+            <h3 class="mt-2 text-sm font-medium text-gray-900">
+              {{ t('user.usageStats.usageChart') }}
+            </h3>
+            <p class="mt-1 text-sm text-gray-500">
+              {{ t('user.usageStats.dailyUsageTrendsHere') }}
+            </p>
             <p class="mt-2 text-xs text-gray-400">
-              (Chart integration can be added with Chart.js, D3.js, or similar library)
+              {{ t('user.usageStats.chartIntegrationNote') }}
             </p>
           </div>
         </div>
@@ -206,7 +220,9 @@
       class="rounded-lg bg-white shadow"
     >
       <div class="px-4 py-5 sm:p-6">
-        <h3 class="mb-4 text-lg font-medium leading-6 text-gray-900">Usage by Model</h3>
+        <h3 class="mb-4 text-lg font-medium leading-6 text-gray-900">
+          {{ t('user.usageStats.usageByModel') }}
+        </h3>
         <div class="space-y-3">
           <div
             v-for="model in usageStats.modelStats"
@@ -222,7 +238,9 @@
               </div>
             </div>
             <div class="text-right">
-              <p class="text-sm text-gray-900">{{ formatNumber(model.requests) }} requests</p>
+              <p class="text-sm text-gray-900">
+                {{ formatNumber(model.requests) }} {{ t('user.usageStats.requests') }}
+              </p>
               <p class="text-xs text-gray-500">${{ model.cost.toFixed(4) }}</p>
             </div>
           </div>
@@ -233,7 +251,9 @@
     <!-- Detailed Usage Table -->
     <div v-if="!loading && userApiKeys.length > 0" class="rounded-lg bg-white shadow">
       <div class="px-4 py-5 sm:p-6">
-        <h3 class="mb-4 text-lg font-medium leading-6 text-gray-900">Usage by API Key</h3>
+        <h3 class="mb-4 text-lg font-medium leading-6 text-gray-900">
+          {{ t('user.usageStats.usageByApiKey') }}
+        </h3>
         <div class="overflow-hidden">
           <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
@@ -242,37 +262,37 @@
                   class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
                   scope="col"
                 >
-                  API Key
+                  {{ t('user.usageStats.apiKey') }}
                 </th>
                 <th
                   class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
                   scope="col"
                 >
-                  Requests
+                  {{ t('user.usageStats.requests') }}
                 </th>
                 <th
                   class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
                   scope="col"
                 >
-                  Input Tokens
+                  {{ t('user.usageStats.inputTokens') }}
                 </th>
                 <th
                   class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
                   scope="col"
                 >
-                  Output Tokens
+                  {{ t('user.usageStats.outputTokens') }}
                 </th>
                 <th
                   class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
                   scope="col"
                 >
-                  Cost
+                  {{ t('user.usageStats.cost') }}
                 </th>
                 <th
                   class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
                   scope="col"
                 >
-                  Status
+                  {{ t('user.usageStats.status') }}
                 </th>
               </tr>
             </thead>
@@ -307,10 +327,10 @@
                   >
                     {{
                       apiKey.isDeleted === 'true' || apiKey.deletedAt
-                        ? 'Deleted'
+                        ? t('user.usageStats.deleted')
                         : apiKey.isActive
-                          ? 'Active'
-                          : 'Disabled'
+                          ? t('user.usageStats.active')
+                          : t('user.usageStats.disabled')
                     }}
                   </span>
                 </td>
@@ -339,10 +359,9 @@
           stroke-width="2"
         />
       </svg>
-      <h3 class="mt-2 text-sm font-medium text-gray-900">No usage data</h3>
+      <h3 class="mt-2 text-sm font-medium text-gray-900">{{ t('user.usageStats.noUsageData') }}</h3>
       <p class="mt-1 text-sm text-gray-500">
-        You haven't made any API requests yet. Create an API key and start using the service to see
-        usage statistics.
+        {{ t('user.usageStats.noUsageMessage') }}
       </p>
     </div>
   </div>
@@ -350,8 +369,11 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useUserStore } from '@/stores/user'
 import { showToast } from '@/utils/toast'
+
+const { t } = useI18n()
 
 const userStore = useUserStore()
 
@@ -380,8 +402,7 @@ const loadUsageStats = async () => {
     usageStats.value = stats
     userApiKeys.value = apiKeys
   } catch (error) {
-    console.error('Failed to load usage stats:', error)
-    showToast('Failed to load usage statistics', 'error')
+    showToast(t('user.usageStats.loadFailed'), 'error')
   } finally {
     loading.value = false
   }

@@ -124,7 +124,6 @@ const handleTabChange = async (tabKey) => {
   } catch (err) {
     // 如果路由切换失败，恢复activeTab状态
     if (err.name !== 'NavigationDuplicated') {
-      console.error('路由切换失败:', err)
       // 恢复到当前路由对应的tab
       initActiveTab()
     }

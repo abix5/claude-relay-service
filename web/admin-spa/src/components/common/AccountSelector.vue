@@ -41,7 +41,7 @@
                 ref="searchInput"
                 v-model="searchQuery"
                 class="form-input w-full border-gray-300 text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:placeholder-gray-400"
-                placeholder="搜索账号名称..."
+                :placeholder="t('common.searchAccountPlaceholder')"
                 style="padding-left: 40px; padding-right: 36px"
                 type="text"
                 @input="handleSearch"
@@ -90,7 +90,9 @@
               :class="{ 'bg-blue-50 dark:bg-blue-900/20': !modelValue }"
               @click="selectAccount(null)"
             >
-              <span class="text-gray-700 dark:text-gray-300">{{ defaultOptionText }}</span>
+              <span class="text-gray-700 dark:text-gray-300">{{
+                defaultOptionText || t('common.useSharedAccountPool')
+              }}</span>
             </div>
 
             <!-- 分组选项 -->
@@ -98,7 +100,7 @@
               <div
                 class="bg-gray-50 px-4 py-2 text-xs font-semibold text-gray-500 dark:bg-gray-700 dark:text-gray-400"
               >
-                调度分组
+                {{ t('common.schedulingGroups') }}
               </div>
               <div
                 v-for="group in filteredGroups"
@@ -110,7 +112,7 @@
                 <div class="flex items-center justify-between">
                   <span class="text-gray-700 dark:text-gray-300">{{ group.name }}</span>
                   <span class="text-xs text-gray-500 dark:text-gray-400"
-                    >{{ group.memberCount || 0 }} 个成员</span
+                    >{{ group.memberCount || 0 }} {{ t('common.members') }}</span
                   >
                 </div>
               </div>
@@ -123,14 +125,14 @@
               >
                 {{
                   platform === 'claude'
-                    ? 'Claude OAuth 专属账号'
+                    ? t('common.claudeOAuthDedicatedAccount')
                     : platform === 'openai'
-                      ? 'OpenAI 专属账号'
+                      ? t('common.openaiDedicatedAccount')
                       : platform === 'droid'
-                        ? 'Droid 专属账号'
+                        ? t('common.droidDedicatedAccount')
                         : platform === 'gemini'
-                          ? 'Gemini OAuth 专属账号'
-                          : 'OAuth 专属账号'
+                          ? t('common.geminiOAuthDedicatedAccount')
+                          : t('common.oauthDedicatedAccount')
                 }}
               </div>
               <div
@@ -168,7 +170,7 @@
               <div
                 class="bg-gray-50 px-4 py-2 text-xs font-semibold text-gray-500 dark:bg-gray-700 dark:text-gray-400"
               >
-                Claude Console 专属账号
+                {{ t('common.claudeConsoleDedicatedAccount') }}
               </div>
               <div
                 v-for="account in filteredConsoleAccounts"
@@ -207,7 +209,7 @@
               <div
                 class="bg-gray-50 px-4 py-2 text-xs font-semibold text-gray-500 dark:bg-gray-700 dark:text-gray-400"
               >
-                OpenAI-Responses 专属账号
+                {{ t('common.openaiResponsesDedicatedAccount') }}
               </div>
               <div
                 v-for="account in filteredOpenAIResponsesAccounts"
@@ -286,7 +288,7 @@
               class="px-4 py-8 text-center text-gray-500 dark:text-gray-400"
             >
               <i class="fas fa-search mb-2 text-2xl" />
-              <p class="text-sm">没有找到匹配的账号</p>
+              <p class="text-sm">{{ t('common.noAccountsFound') }}</p>
             </div>
           </div>
         </div>
@@ -297,6 +299,9 @@
 
 <script setup>
 import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps({
   modelValue: {
@@ -322,11 +327,11 @@ const props = defineProps({
   },
   placeholder: {
     type: String,
-    default: '请选择账号'
+    default: ''
   },
   defaultOptionText: {
     type: String,
-    default: '使用共享账号池'
+    default: ''
   },
   specialOptions: {
     type: Array,
@@ -355,13 +360,13 @@ const selectedLabel = computed(() => {
   }
 
   // 如果没有选中值，显示默认选项文本
-  if (!props.modelValue) return props.defaultOptionText
+  if (!props.modelValue) return props.defaultOptionText || t('common.useSharedAccountPool')
 
   // 分组
   if (props.modelValue.startsWith('group:')) {
     const groupId = props.modelValue.substring(6)
     const group = props.groups.find((g) => g.id === groupId)
-    return group ? `${group.name} (${group.memberCount || 0} 个成员)` : ''
+    return group ? `${group.name} (${group.memberCount || 0} ${t('common.members')})` : ''
   }
 
   // Console 账号
@@ -406,26 +411,26 @@ const getAccountStatusText = (account) => {
     // 根据 status 提供更详细的状态信息
     switch (account.status) {
       case 'unauthorized':
-        return '未授权'
+        return t('common.unauthorized')
       case 'error':
-        return 'Token错误'
+        return t('common.tokenError')
       case 'created':
-        return '待验证'
+        return t('common.pending')
       case 'rate_limited':
-        return '限流中'
+        return t('common.rateLimited')
       case 'quota_exceeded':
-        return '额度超限'
+        return t('common.quotaExceeded')
       default:
-        return '异常'
+        return t('common.abnormal')
     }
   }
 
   // 对于激活的账号，如果是限流状态也要显示
   if (account.status === 'rate_limited') {
-    return '限流中'
+    return t('common.rateLimited')
   }
 
-  return '正常'
+  return t('common.normal')
 }
 
 // 按创建时间倒序排序账号

@@ -4,9 +4,11 @@
       <!-- 页面标题 -->
       <div class="mb-4 sm:mb-6">
         <h3 class="mb-1 text-lg font-bold text-gray-900 dark:text-gray-100 sm:mb-2 sm:text-xl">
-          系统设置
+          {{ t('settings.title') }}
         </h3>
-        <p class="text-sm text-gray-600 dark:text-gray-400 sm:text-base">网站定制和通知配置</p>
+        <p class="text-sm text-gray-600 dark:text-gray-400 sm:text-base">
+          {{ t('settings.description') }}
+        </p>
       </div>
 
       <!-- 设置分类导航 -->
@@ -22,7 +24,7 @@
             @click="activeSection = 'branding'"
           >
             <i class="fas fa-palette mr-2"></i>
-            品牌设置
+            {{ t('settings.brandSettings') }}
           </button>
           <button
             :class="[
@@ -34,7 +36,7 @@
             @click="activeSection = 'webhook'"
           >
             <i class="fas fa-bell mr-2"></i>
-            通知设置
+            {{ t('settings.notificationSettings') }}
           </button>
           <button
             :class="[
@@ -54,7 +56,7 @@
       <!-- 加载状态 -->
       <div v-if="loading" class="py-12 text-center">
         <div class="loading-spinner mx-auto mb-4"></div>
-        <p class="text-gray-500 dark:text-gray-400">正在加载设置...</p>
+        <p class="text-gray-500 dark:text-gray-400">{{ t('settings.loading') }}</p>
       </div>
 
       <!-- 内容区域 -->
@@ -76,9 +78,11 @@
                       </div>
                       <div>
                         <div class="text-sm font-semibold text-gray-900 dark:text-gray-100">
-                          网站名称
+                          {{ t('settings.siteName') }}
                         </div>
-                        <div class="text-xs text-gray-500 dark:text-gray-400">品牌标识</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400">
+                          {{ t('settings.brandIdentifier') }}
+                        </div>
                       </div>
                     </div>
                   </td>
@@ -91,7 +95,7 @@
                       type="text"
                     />
                     <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                      将显示在浏览器标题和页面头部
+                      {{ t('settings.siteNameDescription') }}
                     </p>
                   </td>
                 </tr>
@@ -107,9 +111,11 @@
                       </div>
                       <div>
                         <div class="text-sm font-semibold text-gray-900 dark:text-gray-100">
-                          网站图标
+                          {{ t('settings.siteIcon') }}
                         </div>
-                        <div class="text-xs text-gray-500 dark:text-gray-400">Favicon</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400">
+                          {{ t('settings.favicon') }}
+                        </div>
                       </div>
                     </div>
                   </td>
@@ -121,17 +127,19 @@
                         class="inline-flex items-center gap-3 rounded-lg bg-gray-50 p-3 dark:bg-gray-700"
                       >
                         <img
-                          alt="图标预览"
+                          :alt="t('settings.iconPreview')"
                           class="h-8 w-8"
                           :src="oemSettings.siteIconData || oemSettings.siteIcon"
                           @error="handleIconError"
                         />
-                        <span class="text-sm text-gray-600 dark:text-gray-400">当前图标</span>
+                        <span class="text-sm text-gray-600 dark:text-gray-400">{{
+                          t('settings.currentIcon')
+                        }}</span>
                         <button
                           class="rounded-lg px-3 py-1 font-medium text-red-600 transition-colors hover:bg-red-50 hover:text-red-900"
                           @click="removeIcon"
                         >
-                          <i class="fas fa-trash mr-1" />删除
+                          <i class="fas fa-trash mr-1" />{{ t('common.delete') }}
                         </button>
                       </div>
 
@@ -149,11 +157,11 @@
                           @click="$refs.iconFileInput.click()"
                         >
                           <i class="fas fa-upload mr-2" />
-                          上传图标
+                          {{ t('settings.uploadIcon') }}
                         </button>
-                        <span class="ml-3 text-xs text-gray-500 dark:text-gray-400"
-                          >支持 .ico, .png, .jpg, .svg 格式，最大 350KB</span
-                        >
+                        <span class="ml-3 text-xs text-gray-500 dark:text-gray-400">{{
+                          t('settings.supportedFormats')
+                        }}</span>
                       </div>
                     </div>
                   </td>
@@ -170,9 +178,11 @@
                       </div>
                       <div>
                         <div class="text-sm font-semibold text-gray-900 dark:text-gray-100">
-                          管理入口
+                          {{ t('settings.adminEntry') }}
                         </div>
-                        <div class="text-xs text-gray-500 dark:text-gray-400">登录按钮显示</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400">
+                          {{ t('settings.loginButtonDisplay') }}
+                        </div>
                       </div>
                     </div>
                   </td>
@@ -184,12 +194,14 @@
                           class="peer relative h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:peer-focus:ring-blue-800"
                         ></div>
                         <span class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">{{
-                          hideAdminButton ? '隐藏登录按钮' : '显示登录按钮'
+                          hideAdminButton
+                            ? $t('settings.hideLoginButton')
+                            : $t('settings.showLoginButton')
                         }}</span>
                       </label>
                     </div>
                     <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                      隐藏后，用户需要直接访问 /admin/login 页面登录
+                      {{ t('settings.loginPageAccess') }}
                     </p>
                   </td>
                 </tr>
@@ -207,7 +219,7 @@
                         >
                           <div v-if="saving" class="loading-spinner mr-2"></div>
                           <i v-else class="fas fa-save mr-2" />
-                          {{ saving ? '保存中...' : '保存设置' }}
+                          {{ saving ? $t('settings.saving') : $t('settings.saveSettings') }}
                         </button>
 
                         <button
@@ -216,7 +228,7 @@
                           @click="resetOemSettings"
                         >
                           <i class="fas fa-undo mr-2" />
-                          重置为默认
+                          {{ t('settings.resetToDefault') }}
                         </button>
                       </div>
 
@@ -225,7 +237,7 @@
                         class="text-sm text-gray-500 dark:text-gray-400"
                       >
                         <i class="fas fa-clock mr-1" />
-                        最后更新：{{ formatDateTime(oemSettings.updatedAt) }}
+                        {{ t('settings.lastUpdate') }}：{{ formatDateTime(oemSettings.updatedAt) }}
                       </div>
                     </div>
                   </td>
@@ -245,8 +257,12 @@
                   <i class="fas fa-tag"></i>
                 </div>
                 <div>
-                  <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">站点名称</h3>
-                  <p class="text-sm text-gray-500 dark:text-gray-400">自定义您的站点品牌名称</p>
+                  <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">
+                    {{ t('settings.siteName') }}
+                  </h3>
+                  <p class="text-sm text-gray-500 dark:text-gray-400">
+                    {{ t('settings.brandIdentity') }}
+                  </p>
                 </div>
               </div>
               <input
@@ -267,9 +283,11 @@
                   <i class="fas fa-image"></i>
                 </div>
                 <div>
-                  <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">站点图标</h3>
+                  <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">
+                    {{ t('settings.siteIcon') }}
+                  </h3>
                   <p class="text-sm text-gray-500 dark:text-gray-400">
-                    上传自定义图标或输入图标URL
+                    {{ t('settings.displayInBrowserTitle') }}
                   </p>
                 </div>
               </div>
@@ -280,17 +298,19 @@
                   class="inline-flex items-center gap-3 rounded-lg bg-gray-50 p-3 dark:bg-gray-700"
                 >
                   <img
-                    alt="图标预览"
+                    :alt="t('settings.iconPreview')"
                     class="h-8 w-8"
                     :src="oemSettings.siteIconData || oemSettings.siteIcon"
                     @error="handleIconError"
                   />
-                  <span class="text-sm text-gray-600 dark:text-gray-400">当前图标</span>
+                  <span class="text-sm text-gray-600 dark:text-gray-400">{{
+                    t('settings.currentIcon')
+                  }}</span>
                   <button
                     class="rounded-lg px-3 py-1 font-medium text-red-600 transition-colors hover:bg-red-50 hover:text-red-900"
                     @click="removeIcon"
                   >
-                    删除
+                    {{ t('common.delete') }}
                   </button>
                 </div>
 
@@ -308,10 +328,10 @@
                     @click="$refs.iconFileInputMobile.click()"
                   >
                     <i class="fas fa-upload mr-2" />
-                    上传图标
+                    {{ t('settings.uploadIcon') }}
                   </button>
                   <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                    支持 .ico, .png, .jpg, .svg 格式，最大 350KB
+                    {{ t('settings.supportedFormats') }}
                   </p>
                 </div>
               </div>
@@ -326,8 +346,12 @@
                   <i class="fas fa-eye-slash"></i>
                 </div>
                 <div>
-                  <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">管理入口</h3>
-                  <p class="text-sm text-gray-500 dark:text-gray-400">控制登录按钮在首页的显示</p>
+                  <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">
+                    {{ t('settings.adminEntry') }}
+                  </h3>
+                  <p class="text-sm text-gray-500 dark:text-gray-400">
+                    {{ t('settings.loginButtonDisplay') }}
+                  </p>
                 </div>
               </div>
               <div class="space-y-2">
@@ -337,11 +361,13 @@
                     class="peer relative h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:peer-focus:ring-blue-800"
                   ></div>
                   <span class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">{{
-                    hideAdminButton ? '隐藏登录按钮' : '显示登录按钮'
+                    hideAdminButton
+                      ? $t('settings.hideLoginButton')
+                      : $t('settings.showLoginButton')
                   }}</span>
                 </label>
                 <p class="text-xs text-gray-500 dark:text-gray-400">
-                  隐藏后，用户需要直接访问 /admin/login 页面登录
+                  {{ t('settings.loginPageAccess') }}
                 </p>
               </div>
             </div>
@@ -357,7 +383,7 @@
                 >
                   <div v-if="saving" class="loading-spinner mr-2"></div>
                   <i v-else class="fas fa-save mr-2" />
-                  {{ saving ? '保存中...' : '保存设置' }}
+                  {{ saving ? $t('settings.saving') : $t('settings.saveSettings') }}
                 </button>
 
                 <button
@@ -366,7 +392,7 @@
                   @click="resetOemSettings"
                 >
                   <i class="fas fa-undo mr-2" />
-                  重置为默认
+                  {{ t('settings.resetToDefault') }}
                 </button>
 
                 <div
@@ -374,7 +400,7 @@
                   class="text-center text-sm text-gray-500 dark:text-gray-400"
                 >
                   <i class="fas fa-clock mr-1" />
-                  上次更新: {{ formatDateTime(oemSettings.updatedAt) }}
+                  {{ t('settings.lastUpdate') }}: {{ formatDateTime(oemSettings.updatedAt) }}
                 </div>
               </div>
             </div>
@@ -389,9 +415,11 @@
           >
             <div class="flex items-center justify-between">
               <div>
-                <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200">启用通知</h2>
+                <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200">
+                  {{ t('settings.webhook.enableNotifications') }}
+                </h2>
                 <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                  开启后，系统将按配置发送通知到指定平台
+                  {{ t('settings.webhook.enableNotificationsDesc') }}
                 </p>
               </div>
               <label class="relative inline-flex cursor-pointer items-center">
@@ -412,7 +440,9 @@
           <div
             class="mb-6 rounded-lg bg-white/80 p-6 shadow-lg backdrop-blur-sm dark:bg-gray-800/80"
           >
-            <h2 class="mb-4 text-lg font-semibold text-gray-800 dark:text-gray-200">通知类型</h2>
+            <h2 class="mb-4 text-lg font-semibold text-gray-800 dark:text-gray-200">
+              {{ t('settings.webhook.notificationTypes') }}
+            </h2>
             <div class="space-y-3">
               <div
                 v-for="(enabled, type) in webhookConfig.notificationTypes"
@@ -447,13 +477,15 @@
             class="mb-6 rounded-lg bg-white/80 p-6 shadow-lg backdrop-blur-sm dark:bg-gray-800/80"
           >
             <div class="mb-4 flex items-center justify-between">
-              <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200">通知平台</h2>
+              <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200">
+                {{ t('settings.webhook.notificationPlatforms') }}
+              </h2>
               <button
                 class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700"
                 @click="showAddPlatformModal = true"
               >
                 <i class="fas fa-plus mr-2"></i>
-                添加平台
+                {{ t('settings.webhook.addPlatform') }}
               </button>
             </div>
 
@@ -493,7 +525,10 @@
                         class="flex items-center text-gray-600 dark:text-gray-400"
                       >
                         <i class="fas fa-comments mr-2"></i>
-                        <span class="truncate">Chat ID: {{ platform.chatId || '未配置' }}</span>
+                        <span class="truncate"
+                          >{{ t('settings.webhook.chatId') }}:
+                          {{ platform.chatId || t('settings.webhook.notConfigured') }}</span
+                        >
                       </div>
                       <div
                         v-if="platform.type === 'telegram' && platform.botToken"
@@ -516,7 +551,9 @@
                         class="flex items-center text-gray-600 dark:text-gray-400"
                       >
                         <i class="fas fa-route mr-2"></i>
-                        <span class="truncate">代理: {{ platform.proxyUrl }}</span>
+                        <span class="truncate"
+                          >{{ t('settings.webhook.proxy') }}: {{ platform.proxyUrl }}</span
+                        >
                       </div>
                       <div
                         v-if="platform.type === 'smtp' && platform.to"
@@ -532,7 +569,7 @@
                         class="flex items-center text-gray-600 dark:text-gray-400"
                       >
                         <i class="fas fa-shield-alt mr-2"></i>
-                        <span>已启用签名验证</span>
+                        <span>{{ t('settings.webhook.signatureEnabled') }}</span>
                       </div>
                     </div>
                   </div>
@@ -552,7 +589,7 @@
                     <!-- 测试按钮 -->
                     <button
                       class="rounded-lg bg-blue-100 p-2 text-blue-600 transition-colors hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-400 dark:hover:bg-blue-800"
-                      title="测试连接"
+                      :title="t('settings.webhook.testConnection')"
                       @click="testPlatform(platform)"
                     >
                       <i class="fas fa-vial"></i>
@@ -560,7 +597,7 @@
                     <!-- 编辑按钮 -->
                     <button
                       class="rounded-lg bg-gray-100 p-2 text-gray-600 transition-colors hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600"
-                      title="编辑"
+                      :title="t('settings.webhook.edit')"
                       @click="editPlatform(platform)"
                     >
                       <i class="fas fa-edit"></i>
@@ -568,7 +605,7 @@
                     <!-- 删除按钮 -->
                     <button
                       class="rounded-lg bg-red-100 p-2 text-red-600 transition-colors hover:bg-red-200 dark:bg-red-900 dark:text-red-400 dark:hover:bg-red-800"
-                      title="删除"
+                      :title="t('settings.webhook.delete')"
                       @click="deletePlatform(platform.id)"
                     >
                       <i class="fas fa-trash"></i>
@@ -578,17 +615,19 @@
               </div>
             </div>
             <div v-else class="py-8 text-center text-gray-500 dark:text-gray-400">
-              暂无配置的通知平台，请点击"添加平台"按钮添加
+              {{ t('settings.webhook.noPlatforms') }}
             </div>
           </div>
 
           <!-- 高级设置 -->
           <div class="rounded-lg bg-white/80 p-6 shadow-lg backdrop-blur-sm dark:bg-gray-800/80">
-            <h2 class="mb-4 text-lg font-semibold text-gray-800 dark:text-gray-200">高级设置</h2>
+            <h2 class="mb-4 text-lg font-semibold text-gray-800 dark:text-gray-200">
+              {{ t('settings.webhook.advancedSettings') }}
+            </h2>
             <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
               <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  最大重试次数
+                  {{ t('settings.webhook.maxRetries') }}
                 </label>
                 <input
                   v-model.number="webhookConfig.retrySettings.maxRetries"
@@ -601,7 +640,7 @@
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  重试延迟 (毫秒)
+                  {{ t('settings.webhook.retryDelay') }}
                 </label>
                 <input
                   v-model.number="webhookConfig.retrySettings.retryDelay"
@@ -615,7 +654,7 @@
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  超时时间 (毫秒)
+                  {{ t('settings.webhook.timeout') }}
                 </label>
                 <input
                   v-model.number="webhookConfig.retrySettings.timeout"
@@ -637,7 +676,7 @@
               @click="sendTestNotification"
             >
               <i class="fas fa-paper-plane mr-2"></i>
-              发送测试通知
+              {{ t('settings.webhook.sendTestNotification') }}
             </button>
           </div>
         </div>
@@ -1052,10 +1091,21 @@
             </div>
             <div>
               <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                {{ editingPlatform ? '编辑' : '添加' }}通知平台
+                {{
+                  editingPlatform
+                    ? t('settings.webhook.editNotificationPlatform')
+                    : t('settings.webhook.addNotificationPlatform')
+                }}
+                {{ t('settings.webhook.platformModalTitle') }}
               </h3>
               <p class="mt-0.5 text-sm text-gray-600 dark:text-gray-400">
-                配置{{ editingPlatform ? '并更新' : '新的' }}Webhook通知渠道
+                {{ t('settings.webhook.configurePlatform')
+                }}{{
+                  editingPlatform
+                    ? t('settings.webhook.updatePlatform')
+                    : t('settings.webhook.newPlatform')
+                }}
+                Webhook {{ t('settings.webhook.platformModalTitle') }}
               </p>
             </div>
           </div>
@@ -1077,7 +1127,7 @@
               class="mb-2 flex items-center text-sm font-medium text-gray-700 dark:text-gray-300"
             >
               <i class="fas fa-layer-group mr-2 text-gray-400"></i>
-              平台类型
+              {{ t('settings.webhook.platformType') }}
             </label>
             <div class="relative">
               <select
@@ -1085,15 +1135,15 @@
                 class="w-full appearance-none rounded-xl border border-gray-300 bg-white px-4 py-3 pr-10 text-gray-900 shadow-sm transition-all focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                 :disabled="editingPlatform"
               >
-                <option value="wechat_work">🟢 企业微信</option>
-                <option value="dingtalk">🔵 钉钉</option>
-                <option value="feishu">🟦 飞书</option>
-                <option value="slack">🟣 Slack</option>
-                <option value="discord">🟪 Discord</option>
-                <option value="telegram">✈️ Telegram</option>
-                <option value="bark">🔔 Bark</option>
-                <option value="smtp">📧 邮件通知</option>
-                <option value="custom">⚙️ 自定义</option>
+                <option value="wechat_work">{{ t('settings.webhook.wechatWork') }}</option>
+                <option value="dingtalk">{{ t('settings.webhook.dingtalk') }}</option>
+                <option value="feishu">{{ t('settings.webhook.feishu') }}</option>
+                <option value="slack">{{ t('settings.webhook.slack') }}</option>
+                <option value="discord">{{ t('settings.webhook.discord') }}</option>
+                <option value="telegram">{{ t('settings.webhook.telegram') }}</option>
+                <option value="bark">{{ t('settings.webhook.bark') }}</option>
+                <option value="smtp">{{ t('settings.webhook.emailNotification') }}</option>
+                <option value="custom">{{ t('settings.webhook.custom') }}</option>
               </select>
               <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
                 <i class="fas fa-chevron-down text-gray-400"></i>
@@ -1101,7 +1151,7 @@
             </div>
             <p v-if="editingPlatform" class="mt-1 text-xs text-amber-600 dark:text-amber-400">
               <i class="fas fa-info-circle mr-1"></i>
-              编辑模式下不能更改平台类型
+              {{ t('settings.webhook.editModeWarning') }}
             </p>
           </div>
 
@@ -1111,13 +1161,13 @@
               class="mb-2 flex items-center text-sm font-medium text-gray-700 dark:text-gray-300"
             >
               <i class="fas fa-tag mr-2 text-gray-400"></i>
-              名称
-              <span class="ml-2 text-xs text-gray-500">(可选)</span>
+              {{ t('settings.webhook.platformName') }}
+              <span class="ml-2 text-xs text-gray-500">{{ t('settings.webhook.optional') }}</span>
             </label>
             <input
               v-model="platformForm.name"
               class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-900 shadow-sm transition-all placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
-              placeholder="例如：运维群通知、开发测试群"
+              :placeholder="t('settings.webhook.namePlaceholder')"
               type="text"
             />
           </div>
@@ -1181,12 +1231,12 @@
               <input
                 v-model="platformForm.botToken"
                 class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 font-mono text-sm text-gray-900 shadow-sm transition-all placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
-                placeholder="例如：123456789:ABCDEFghijk-xyz"
+                :placeholder="t('settings.telegramTokenPlaceholder')"
                 required
                 type="text"
               />
               <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                在 Telegram 的 @BotFather 中创建机器人后获得的 Token
+                {{ t('settings.telegramTokenDescription') }}
               </p>
             </div>
 
@@ -1201,12 +1251,12 @@
               <input
                 v-model="platformForm.chatId"
                 class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 font-mono text-sm text-gray-900 shadow-sm transition-all placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
-                placeholder="例如：123456789 或 -1001234567890"
+                :placeholder="t('settings.telegramChatIdPlaceholder')"
                 required
                 type="text"
               />
               <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                可使用 @userinfobot、@RawDataBot 或 API 获取聊天/频道的 Chat ID
+                {{ t('settings.telegramChatIdDescription') }}
               </p>
             </div>
 
@@ -1215,17 +1265,17 @@
                 class="mb-2 flex items-center text-sm font-medium text-gray-700 dark:text-gray-300"
               >
                 <i class="fas fa-globe mr-2 text-gray-400"></i>
-                API 基础地址
-                <span class="ml-2 text-xs text-gray-500">(可选)</span>
+                {{ t('settings.telegramApiBaseLabel') }}
+                <span class="ml-2 text-xs text-gray-500">{{ t('settings.optional') }}</span>
               </label>
               <input
                 v-model="platformForm.apiBaseUrl"
                 class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 font-mono text-sm text-gray-900 shadow-sm transition-all placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
-                placeholder="默认: https://api.telegram.org"
+                :placeholder="t('settings.telegramApiBasePlaceholder')"
                 type="url"
               />
               <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                使用自建 Bot API 时可覆盖默认域名，需以 http 或 https 开头
+                {{ t('settings.telegramApiBaseDescription') }}
               </p>
             </div>
 
@@ -1234,17 +1284,17 @@
                 class="mb-2 flex items-center text-sm font-medium text-gray-700 dark:text-gray-300"
               >
                 <i class="fas fa-route mr-2 text-gray-400"></i>
-                代理地址
-                <span class="ml-2 text-xs text-gray-500">(可选)</span>
+                {{ t('settings.telegramProxyLabel') }}
+                <span class="ml-2 text-xs text-gray-500">{{ t('settings.optional') }}</span>
               </label>
               <input
                 v-model="platformForm.proxyUrl"
                 class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 font-mono text-sm text-gray-900 shadow-sm transition-all placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
-                placeholder="例如：socks5://user:pass@127.0.0.1:1080"
+                :placeholder="t('settings.telegramProxyPlaceholder')"
                 type="text"
               />
               <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                支持 http、https、socks4/4a/5 代理，留空则直接连接 Telegram 官方 API
+                {{ t('settings.telegramProxyDescription') }}
               </p>
             </div>
 
@@ -1252,7 +1302,7 @@
               class="flex items-start rounded-lg bg-blue-50 p-3 text-sm text-blue-700 dark:bg-blue-900/20 dark:text-blue-300"
             >
               <i class="fas fa-info-circle mr-2 mt-0.5"></i>
-              <div>机器人需先加入对应群组或频道并授予发送消息权限，通知会以纯文本方式发送。</div>
+              <div>{{ t('settings.telegramBotPermissionNote') }}</div>
             </div>
           </div>
 
@@ -1264,18 +1314,18 @@
                 class="mb-2 flex items-center text-sm font-medium text-gray-700 dark:text-gray-300"
               >
                 <i class="fas fa-key mr-2 text-gray-400"></i>
-                设备密钥 (Device Key)
+                {{ t('settings.deviceKey') }}
                 <span class="ml-1 text-xs text-red-500">*</span>
               </label>
               <input
                 v-model="platformForm.deviceKey"
                 class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 font-mono text-sm text-gray-900 shadow-sm transition-all placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
-                placeholder="例如：aBcDeFgHiJkLmNoPqRsTuVwX"
+                :placeholder="t('settings.barkDeviceKeyPlaceholder')"
                 required
                 type="text"
               />
               <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                在Bark App中查看您的推送密钥
+                {{ t('settings.barkDeviceKeyDescription') }}
               </p>
             </div>
 
@@ -1285,58 +1335,58 @@
                 class="mb-2 flex items-center text-sm font-medium text-gray-700 dark:text-gray-300"
               >
                 <i class="fas fa-server mr-2 text-gray-400"></i>
-                服务器地址
-                <span class="ml-2 text-xs text-gray-500">(可选)</span>
+                {{ t('settings.barkServerLabel') }}
+                <span class="ml-2 text-xs text-gray-500">{{ t('settings.optional') }}</span>
               </label>
               <input
                 v-model="platformForm.serverUrl"
                 class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 font-mono text-sm text-gray-900 shadow-sm transition-all placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
-                placeholder="默认: https://api.day.app/push"
+                :placeholder="t('settings.barkDefaultServerUrl')"
                 type="url"
               />
             </div>
 
-            <!-- 通知级别 -->
+            <!-- {{ t('settings.barkNotificationLevelLabel') }} -->
             <div>
               <label
                 class="mb-2 flex items-center text-sm font-medium text-gray-700 dark:text-gray-300"
               >
                 <i class="fas fa-flag mr-2 text-gray-400"></i>
-                通知级别
+                {{ t('settings.barkNotificationLevelLabel') }}
               </label>
               <select
                 v-model="platformForm.level"
                 class="w-full appearance-none rounded-xl border border-gray-300 bg-white px-4 py-3 pr-10 text-gray-900 shadow-sm transition-all focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
               >
-                <option value="">自动（根据通知类型）</option>
-                <option value="passive">被动</option>
-                <option value="active">默认</option>
-                <option value="timeSensitive">时效性</option>
-                <option value="critical">紧急</option>
+                <option value="">{{ t('settings.barkLevelAutomatic') }}</option>
+                <option value="passive">{{ t('settings.barkLevelPassive') }}</option>
+                <option value="active">{{ t('settings.barkLevelDefault') }}</option>
+                <option value="timeSensitive">{{ t('settings.barkLevelTimeSensitive') }}</option>
+                <option value="critical">{{ t('settings.barkLevelCritical') }}</option>
               </select>
             </div>
 
-            <!-- 通知声音 -->
+            <!-- {{ t('settings.barkNotificationSoundLabel') }} -->
             <div>
               <label
                 class="mb-2 flex items-center text-sm font-medium text-gray-700 dark:text-gray-300"
               >
                 <i class="fas fa-volume-up mr-2 text-gray-400"></i>
-                通知声音
+                {{ t('settings.barkNotificationSoundLabel') }}
               </label>
               <select
                 v-model="platformForm.sound"
                 class="w-full appearance-none rounded-xl border border-gray-300 bg-white px-4 py-3 pr-10 text-gray-900 shadow-sm transition-all focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
               >
-                <option value="">自动（根据通知类型）</option>
-                <option value="default">默认</option>
-                <option value="alarm">警报</option>
-                <option value="bell">铃声</option>
-                <option value="birdsong">鸟鸣</option>
-                <option value="electronic">电子音</option>
-                <option value="glass">玻璃</option>
-                <option value="horn">喇叭</option>
-                <option value="silence">静音</option>
+                <option value="">{{ t('settings.barkLevelAutomatic') }}</option>
+                <option value="default">{{ t('settings.barkSoundDefault') }}</option>
+                <option value="alarm">{{ t('settings.barkSoundAlarm') }}</option>
+                <option value="bell">{{ t('settings.barkSoundBell') }}</option>
+                <option value="birdsong">{{ t('settings.barkSoundBirdsong') }}</option>
+                <option value="electronic">{{ t('settings.barkSoundElectronic') }}</option>
+                <option value="glass">{{ t('settings.barkSoundGlass') }}</option>
+                <option value="horn">{{ t('settings.barkSoundHorn') }}</option>
+                <option value="silence">{{ t('settings.barkSoundSilence') }}</option>
               </select>
             </div>
 
@@ -1346,13 +1396,13 @@
                 class="mb-2 flex items-center text-sm font-medium text-gray-700 dark:text-gray-300"
               >
                 <i class="fas fa-folder mr-2 text-gray-400"></i>
-                通知分组
-                <span class="ml-2 text-xs text-gray-500">(可选)</span>
+                {{ t('settings.barkNotificationGroupLabel') }}
+                <span class="ml-2 text-xs text-gray-500">{{ t('settings.optional') }}</span>
               </label>
               <input
                 v-model="platformForm.group"
                 class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-900 shadow-sm transition-all placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
-                placeholder="默认: claude-relay"
+                :placeholder="t('settings.barkDefaultGroup')"
                 type="text"
               />
             </div>
@@ -1361,9 +1411,9 @@
             <div class="mt-2 flex items-start rounded-lg bg-blue-50 p-3 dark:bg-blue-900/20">
               <i class="fas fa-info-circle mr-2 mt-0.5 text-blue-600 dark:text-blue-400"></i>
               <div class="text-sm text-blue-700 dark:text-blue-300">
-                <p>1. 在iPhone上安装Bark App</p>
-                <p>2. 打开App获取您的设备密钥</p>
-                <p>3. 将密钥粘贴到上方输入框</p>
+                <p>{{ t('settings.barkSetupInstructions1') }}</p>
+                <p>{{ t('settings.barkSetupInstructions2') }}</p>
+                <p>{{ t('settings.barkSetupInstructions3') }}</p>
               </div>
             </div>
           </div>
@@ -1376,26 +1426,26 @@
                 class="mb-2 flex items-center text-sm font-medium text-gray-700 dark:text-gray-300"
               >
                 <i class="fas fa-server mr-2 text-gray-400"></i>
-                SMTP 服务器
+                {{ t('settings.smtpServerLabel') }}
                 <span class="ml-1 text-xs text-red-500">*</span>
               </label>
               <input
                 v-model="platformForm.host"
                 class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-900 shadow-sm transition-all placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
-                placeholder="例如: smtp.gmail.com"
+                :placeholder="t('settings.smtpServerPlaceholder')"
                 required
                 type="text"
               />
             </div>
 
-            <!-- SMTP 端口和安全设置 -->
+            <!-- SMTP {{ t('settings.smtpPortLabel') }}和安全设置 -->
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
                 <label
                   class="mb-2 flex items-center text-sm font-medium text-gray-700 dark:text-gray-300"
                 >
                   <i class="fas fa-plug mr-2 text-gray-400"></i>
-                  端口
+                  {{ t('settings.smtpPortLabel') }}
                 </label>
                 <input
                   v-model.number="platformForm.port"
@@ -1406,7 +1456,7 @@
                   type="number"
                 />
                 <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                  默认: 587 (TLS) 或 465 (SSL)
+                  {{ t('settings.smtpPortDefaultNote') }}
                 </p>
               </div>
 
@@ -1415,25 +1465,25 @@
                   class="mb-2 flex items-center text-sm font-medium text-gray-700 dark:text-gray-300"
                 >
                   <i class="fas fa-shield-alt mr-2 text-gray-400"></i>
-                  加密方式
+                  {{ t('settings.smtpEncryptionLabel') }}
                 </label>
                 <select
                   v-model="platformForm.secure"
                   class="w-full appearance-none rounded-xl border border-gray-300 bg-white px-4 py-3 pr-10 text-gray-900 shadow-sm transition-all focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                 >
-                  <option :value="false">STARTTLS (端口587)</option>
-                  <option :value="true">SSL/TLS (端口465)</option>
+                  <option :value="false">{{ t('settings.smtpEncryptionStarttls') }}</option>
+                  <option :value="true">{{ t('settings.smtpEncryptionSsl') }}</option>
                 </select>
               </div>
             </div>
 
-            <!-- 用户名 -->
+            <!-- {{ t('settings.smtpUsernameLabel') }} -->
             <div>
               <label
                 class="mb-2 flex items-center text-sm font-medium text-gray-700 dark:text-gray-300"
               >
                 <i class="fas fa-user mr-2 text-gray-400"></i>
-                用户名
+                {{ t('settings.smtpUsernameLabel') }}
                 <span class="ml-1 text-xs text-red-500">*</span>
               </label>
               <input
@@ -1451,45 +1501,45 @@
                 class="mb-2 flex items-center text-sm font-medium text-gray-700 dark:text-gray-300"
               >
                 <i class="fas fa-lock mr-2 text-gray-400"></i>
-                密码 / 应用密码
+                {{ t('settings.smtpPasswordLabel') }}
                 <span class="ml-1 text-xs text-red-500">*</span>
               </label>
               <input
                 v-model="platformForm.pass"
                 class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-900 shadow-sm transition-all placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
-                placeholder="邮箱密码或应用专用密码"
+                :placeholder="t('settings.smtpPasswordPlaceholder')"
                 required
                 type="password"
               />
               <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                建议使用应用专用密码，而非邮箱登录密码
+                {{ t('settings.smtpPasswordNote') }}
               </p>
             </div>
 
-            <!-- 发件人邮箱 -->
+            <!-- {{ t('settings.smtpSenderLabel') }} -->
             <div>
               <label
                 class="mb-2 flex items-center text-sm font-medium text-gray-700 dark:text-gray-300"
               >
                 <i class="fas fa-paper-plane mr-2 text-gray-400"></i>
-                发件人邮箱
-                <span class="ml-2 text-xs text-gray-500">(可选)</span>
+                {{ t('settings.smtpSenderLabel') }}
+                <span class="ml-2 text-xs text-gray-500">{{ t('settings.optional') }}</span>
               </label>
               <input
                 v-model="platformForm.from"
                 class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-900 shadow-sm transition-all placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
-                placeholder="默认使用用户名邮箱"
+                :placeholder="t('settings.smtpSenderPlaceholder')"
                 type="email"
               />
             </div>
 
-            <!-- 收件人邮箱 -->
+            <!-- {{ t('settings.smtpRecipientLabel') }} -->
             <div>
               <label
                 class="mb-2 flex items-center text-sm font-medium text-gray-700 dark:text-gray-300"
               >
                 <i class="fas fa-envelope mr-2 text-gray-400"></i>
-                收件人邮箱
+                {{ t('settings.smtpRecipientLabel') }}
                 <span class="ml-1 text-xs text-red-500">*</span>
               </label>
               <input
@@ -1499,7 +1549,9 @@
                 required
                 type="email"
               />
-              <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">接收通知的邮箱地址</p>
+              <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                {{ t('settings.smtpRecipientNote') }}
+              </p>
             </div>
           </div>
 
@@ -1521,14 +1573,14 @@
                     class="ml-3 flex items-center text-sm font-medium text-gray-700 dark:text-gray-300"
                   >
                     <i class="fas fa-shield-alt mr-2 text-gray-400"></i>
-                    启用签名验证
+                    {{ t('settings.signatureVerificationLabel') }}
                   </span>
                 </label>
                 <span
                   v-if="platformForm.enableSign"
                   class="rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700 dark:bg-green-900/50 dark:text-green-400"
                 >
-                  已启用
+                  {{ t('settings.signatureEnabled') }}
                 </span>
               </div>
               <transition
@@ -1541,7 +1593,7 @@
               >
                 <div v-if="platformForm.enableSign">
                   <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    签名密钥
+                    {{ t('settings.signatureSecretLabel') }}
                   </label>
                   <input
                     v-model="platformForm.secret"
@@ -1563,7 +1615,7 @@
         <div class="flex items-center justify-between">
           <div class="text-xs text-gray-500 dark:text-gray-400">
             <i class="fas fa-asterisk mr-1 text-red-500"></i>
-            必填项
+            {{ t('settings.webhook.requiredFieldNote') }}
           </div>
           <div class="flex space-x-3">
             <button
@@ -1571,7 +1623,7 @@
               @click="closePlatformModal"
             >
               <i class="fas fa-times mr-2 transition-transform group-hover:scale-110"></i>
-              取消
+              {{ t('settings.webhook.cancel') }}
             </button>
             <button
               class="group flex items-center rounded-xl border border-blue-200 bg-blue-50 px-4 py-2.5 text-sm font-medium text-blue-700 shadow-sm transition-all hover:bg-blue-100 hover:shadow-md dark:border-blue-800 dark:bg-blue-900/50 dark:text-blue-300 dark:hover:bg-blue-900/70"
@@ -1584,7 +1636,11 @@
                   testingConnection ? 'fas fa-spinner fa-spin' : 'fas fa-vial group-hover:scale-110'
                 "
               ></i>
-              {{ testingConnection ? '测试中...' : '测试连接' }}
+              {{
+                testingConnection
+                  ? t('settings.webhook.testingConnection')
+                  : t('settings.webhook.testConnection')
+              }}
             </button>
             <button
               class="group flex items-center rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-2.5 text-sm font-medium text-white shadow-md transition-all hover:from-blue-700 hover:to-indigo-700 hover:shadow-lg disabled:cursor-not-allowed disabled:from-gray-400 disabled:to-gray-500"
@@ -1597,7 +1653,13 @@
                   savingPlatform ? 'fas fa-spinner fa-spin' : 'fas fa-save group-hover:scale-110'
                 "
               ></i>
-              {{ savingPlatform ? '保存中...' : editingPlatform ? '保存修改' : '添加平台' }}
+              {{
+                savingPlatform
+                  ? t('settings.webhook.saving')
+                  : editingPlatform
+                    ? t('common.save')
+                    : t('settings.webhook.addPlatform')
+              }}
             </button>
           </div>
         </div>
@@ -1609,6 +1671,7 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount, watch, computed } from 'vue'
 import { storeToRefs } from 'pinia'
+import { useI18n } from 'vue-i18n'
 import { showToast } from '@/utils/toast'
 import { useSettingsStore } from '@/stores/settings'
 import { apiClient } from '@/config/api'
@@ -1617,6 +1680,9 @@ import { apiClient } from '@/config/api'
 defineOptions({
   name: 'SettingsView'
 })
+
+// i18n
+const { t } = useI18n()
 
 // 使用settings store
 const settingsStore = useSettingsStore()
@@ -1855,7 +1921,7 @@ onMounted(async () => {
       await loadWebhookConfig()
     }
   } catch (error) {
-    showToast('加载设置失败', 'error')
+    showToast(t('settings.loadSettingsFailed'), 'error')
   }
 })
 
@@ -1906,8 +1972,7 @@ const loadWebhookConfig = async () => {
   } catch (error) {
     if (error.name === 'AbortError') return
     if (!isMounted.value) return
-    showToast('获取webhook配置失败', 'error')
-    console.error(error)
+    showToast(t('settings.getWebhookConfigFailed'), 'error')
   }
 }
 
@@ -1928,13 +1993,12 @@ const saveWebhookConfig = async () => {
     })
     if (response.success && isMounted.value) {
       webhookConfig.value = payload
-      showToast('配置已保存', 'success')
+      showToast(t('settings.configSaved'), 'success')
     }
   } catch (error) {
     if (error.name === 'AbortError') return
     if (!isMounted.value) return
-    showToast('保存配置失败', 'error')
-    console.error(error)
+    showToast(t('settings.saveConfigFailed'), 'error')
   }
 }
 
@@ -2050,27 +2114,27 @@ const validateUrl = () => {
 const validatePlatformForm = () => {
   if (platformForm.value.type === 'bark') {
     if (!platformForm.value.deviceKey) {
-      showToast('请输入Bark设备密钥', 'error')
+      showToast(t('settings.pleaseEnterBarkDeviceKey'), 'error')
       return false
     }
   } else if (platformForm.value.type === 'telegram') {
     if (!platformForm.value.botToken) {
-      showToast('请输入 Telegram 机器人 Token', 'error')
+      showToast(t('settings.pleaseEnterTelegramBotToken'), 'error')
       return false
     }
     if (!platformForm.value.chatId) {
-      showToast('请输入 Telegram Chat ID', 'error')
+      showToast(t('settings.pleaseEnterTelegramChatId'), 'error')
       return false
     }
     if (platformForm.value.apiBaseUrl) {
       try {
         const parsed = new URL(platformForm.value.apiBaseUrl)
         if (!['http:', 'https:'].includes(parsed.protocol)) {
-          showToast('Telegram API 基础地址仅支持 http 或 https', 'error')
+          showToast(t('settings.telegramApiBaseHttpsOnly'), 'error')
           return false
         }
       } catch (error) {
-        showToast('请输入有效的 Telegram API 基础地址', 'error')
+        showToast(t('settings.pleaseEnterValidTelegramApiBase'), 'error')
         return false
       }
     }
@@ -2079,35 +2143,35 @@ const validatePlatformForm = () => {
         const parsed = new URL(platformForm.value.proxyUrl)
         const supportedProtocols = ['http:', 'https:', 'socks4:', 'socks4a:', 'socks5:']
         if (!supportedProtocols.includes(parsed.protocol)) {
-          showToast('Telegram 代理仅支持 http/https/socks 协议', 'error')
+          showToast(t('settings.telegramProxyProtocolsOnly'), 'error')
           return false
         }
       } catch (error) {
-        showToast('请输入有效的 Telegram 代理地址', 'error')
+        showToast(t('settings.pleaseEnterValidTelegramProxy'), 'error')
         return false
       }
     }
   } else if (platformForm.value.type === 'smtp') {
     const requiredFields = [
-      { field: 'host', message: 'SMTP服务器' },
-      { field: 'user', message: '用户名' },
-      { field: 'pass', message: '密码' },
-      { field: 'to', message: '收件人邮箱' }
+      { field: 'host', message: t('settings.smtpServerField') },
+      { field: 'user', message: t('settings.usernameField') },
+      { field: 'pass', message: t('settings.passwordField') },
+      { field: 'to', message: t('settings.recipientEmailField') }
     ]
 
     for (const { field, message } of requiredFields) {
       if (!platformForm.value[field]) {
-        showToast(`请输入${message}`, 'error')
+        showToast(`${t('settings.pleaseEnter')}${message}`, 'error')
         return false
       }
     }
   } else {
     if (!platformForm.value.url) {
-      showToast('请输入Webhook URL', 'error')
+      showToast(t('settings.pleaseEnterWebhookUrl'), 'error')
       return false
     }
     if (urlError.value) {
-      showToast('请输入有效的Webhook URL', 'error')
+      showToast(t('settings.pleaseEnterValidWebhookUrl'), 'error')
       return false
     }
   }
@@ -2139,15 +2203,17 @@ const savePlatform = async () => {
     }
 
     if (response.success && isMounted.value) {
-      showToast(editingPlatform.value ? '平台已更新' : '平台已添加', 'success')
+      showToast(
+        editingPlatform.value ? t('settings.platformUpdated') : t('settings.platformAdded'),
+        'success'
+      )
       await loadWebhookConfig()
       closePlatformModal()
     }
   } catch (error) {
     if (error.name === 'AbortError') return
     if (!isMounted.value) return
-    showToast(error.message || '操作失败', 'error')
-    console.error(error)
+    showToast(error.message || t('settings.operationFailed'), 'error')
   } finally {
     if (isMounted.value) {
       savingPlatform.value = false
@@ -2193,7 +2259,7 @@ const editPlatform = (platform) => {
 const deletePlatform = async (id) => {
   if (!isMounted.value) return
 
-  if (!confirm('确定要删除这个平台吗？')) {
+  if (!confirm(t('settings.confirmDeletePlatform'))) {
     return
   }
 
@@ -2202,14 +2268,13 @@ const deletePlatform = async (id) => {
       signal: abortController.value.signal
     })
     if (response.success && isMounted.value) {
-      showToast('平台已删除', 'success')
+      showToast(t('settings.platformDeleted'), 'success')
       await loadWebhookConfig()
     }
   } catch (error) {
     if (error.name === 'AbortError') return
     if (!isMounted.value) return
-    showToast('删除失败', 'error')
-    console.error(error)
+    showToast(t('settings.deleteFailed'), 'error')
   }
 }
 
@@ -2232,8 +2297,7 @@ const togglePlatform = async (id) => {
   } catch (error) {
     if (error.name === 'AbortError') return
     if (!isMounted.value) return
-    showToast('操作失败', 'error')
-    console.error(error)
+    showToast(t('settings.operationFailed'), 'error')
   }
 }
 
@@ -2277,13 +2341,12 @@ const testPlatform = async (platform) => {
       signal: abortController.value.signal
     })
     if (response.success && isMounted.value) {
-      showToast('测试成功', 'success')
+      showToast(t('settings.testSuccess'), 'success')
     }
   } catch (error) {
     if (error.name === 'AbortError') return
     if (!isMounted.value) return
-    showToast(error.error || error.message || '测试失败', 'error')
-    console.error(error)
+    showToast(error.error || error.message || t('settings.testFailed'), 'error')
   }
 }
 
@@ -2300,13 +2363,12 @@ const testPlatformForm = async () => {
       signal: abortController.value.signal
     })
     if (response.success && isMounted.value) {
-      showToast('测试成功', 'success')
+      showToast(t('settings.testSuccess'), 'success')
     }
   } catch (error) {
     if (error.name === 'AbortError') return
     if (!isMounted.value) return
-    showToast(error.error || error.message || '测试失败', 'error')
-    console.error(error)
+    showToast(error.error || error.message || t('settings.testFailed'), 'error')
   } finally {
     if (isMounted.value) {
       testingConnection.value = false
@@ -2335,7 +2397,6 @@ const sendTestNotification = async () => {
     const errorMessage =
       error?.response?.data?.message || error?.response?.data?.error || error?.message || '发送失败'
     showToast(errorMessage, 'error')
-    console.error(error)
   }
 }
 
@@ -2387,15 +2448,15 @@ const closePlatformModal = () => {
 // 辅助函数
 const getPlatformName = (type) => {
   const names = {
-    wechat_work: '企业微信',
-    dingtalk: '钉钉',
-    feishu: '飞书',
-    slack: 'Slack',
-    discord: 'Discord',
-    telegram: 'Telegram',
-    bark: 'Bark',
-    smtp: '邮件通知',
-    custom: '自定义'
+    wechat_work: t('settings.wechatWork'),
+    dingtalk: t('settings.dingtalk'),
+    feishu: t('settings.feishu'),
+    slack: t('settings.slack'),
+    discord: t('settings.discord'),
+    telegram: t('settings.telegram'),
+    bark: t('settings.bark'),
+    smtp: t('settings.emailNotification'),
+    custom: t('settings.custom')
   }
   return names[type] || type
 }
@@ -2416,18 +2477,7 @@ const getPlatformIcon = (type) => {
 }
 
 const getWebhookHint = (type) => {
-  const hints = {
-    wechat_work: '请在企业微信群机器人设置中获取Webhook地址',
-    dingtalk: '请在钉钉群机器人设置中获取Webhook地址',
-    feishu: '请在飞书群机器人设置中获取Webhook地址',
-    slack: '请在Slack应用的Incoming Webhooks中获取地址',
-    discord: '请在Discord服务器的集成设置中创建Webhook',
-    telegram: '使用 @BotFather 创建机器人并复制 Token，Chat ID 可通过 @userinfobot 或相关工具获取',
-    bark: '请在Bark App中查看您的设备密钥',
-    smtp: '请配置SMTP服务器信息，支持Gmail、QQ邮箱等',
-    custom: '请输入完整的Webhook接收地址'
-  }
-  return hints[type] || ''
+  return t(`settings.webhook.hints.${type}`) || ''
 }
 
 const formatTelegramToken = (token) => {
@@ -2438,24 +2488,24 @@ const formatTelegramToken = (token) => {
 
 const getNotificationTypeName = (type) => {
   const names = {
-    accountAnomaly: '账号异常',
-    quotaWarning: '配额警告',
-    systemError: '系统错误',
-    securityAlert: '安全警报',
-    rateLimitRecovery: '限流恢复',
-    test: '测试通知'
+    accountAnomaly: t('settings.webhook.accountAnomaly'),
+    quotaWarning: t('settings.webhook.quotaWarning'),
+    systemError: t('settings.webhook.systemError'),
+    securityAlert: t('settings.webhook.securityAlert'),
+    rateLimitRecovery: t('settings.webhook.rateLimitRecovery'),
+    test: t('settings.webhook.testNotification')
   }
   return names[type] || type
 }
 
 const getNotificationTypeDescription = (type) => {
   const descriptions = {
-    accountAnomaly: '账号状态异常、认证失败等',
-    quotaWarning: 'API调用配额不足警告',
-    systemError: '系统运行错误和故障',
-    securityAlert: '安全相关的警报通知',
-    rateLimitRecovery: '限流状态恢复时发送提醒',
-    test: '用于测试Webhook连接是否正常'
+    accountAnomaly: t('settings.webhook.accountAnomalyDesc'),
+    quotaWarning: t('settings.webhook.quotaWarningDesc'),
+    systemError: t('settings.webhook.systemErrorDesc'),
+    securityAlert: t('settings.webhook.securityAlertDesc'),
+    rateLimitRecovery: t('settings.webhook.rateLimitRecoveryDesc'),
+    test: t('settings.webhook.testNotificationDesc')
   }
   return descriptions[type] || ''
 }
@@ -2471,28 +2521,33 @@ const saveOemSettings = async () => {
     }
     const result = await settingsStore.saveOemSettings(settings)
     if (result && result.success) {
-      showToast('OEM设置保存成功', 'success')
+      showToast(t('settings.oemSettingsSaved'), 'success')
     } else {
-      showToast(result?.message || '保存失败', 'error')
+      showToast(result?.message || t('settings.saveFailed'), 'error')
     }
   } catch (error) {
-    showToast('保存OEM设置失败', 'error')
+    showToast(t('settings.saveOemFailed'), 'error')
   }
 }
 
 // 重置OEM设置
 const resetOemSettings = async () => {
-  if (!confirm('确定要重置为默认设置吗？\n\n这将清除所有自定义的网站名称和图标设置。')) return
+  if (
+    !confirm(
+      `${t('settings.confirm')}${t('settings.resetToDefault')}？\n\n${t('settings.resetConfirmMessage')}`
+    )
+  )
+    return
 
   try {
     const result = await settingsStore.resetOemSettings()
     if (result && result.success) {
-      showToast('已重置为默认设置', 'success')
+      showToast(`已${t('settings.resetToDefault')}`, 'success')
     } else {
-      showToast('重置失败', 'error')
+      showToast(t('settings.resetFailed'), 'error')
     }
   } catch (error) {
-    showToast('重置失败', 'error')
+    showToast(t('settings.resetFailed'), 'error')
   }
 }
 
@@ -2513,7 +2568,7 @@ const handleIconUpload = async (event) => {
     const base64Data = await settingsStore.fileToBase64(file)
     oemSettings.value.siteIconData = base64Data
   } catch (error) {
-    showToast('文件读取失败', 'error')
+    showToast(t('settings.fileReadFailed'), 'error')
   }
 
   // 清除input的值，允许重复选择同一文件
@@ -2527,9 +2582,7 @@ const removeIcon = () => {
 }
 
 // 处理图标加载错误
-const handleIconError = () => {
-  console.warn('Icon failed to load')
-}
+const handleIconError = () => {}
 
 // 格式化日期时间
 const formatDateTime = settingsStore.formatDateTime

@@ -26,10 +26,10 @@
           <span class="ml-2 text-xl font-bold text-gray-900 dark:text-white">Claude Relay</span>
         </div>
         <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
-          User Sign In
+          {{ $t('userLogin.title') }}
         </h2>
         <p class="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
-          Sign in to your account to manage your API keys
+          {{ $t('userLogin.subtitle') }}
         </p>
       </div>
 
@@ -40,7 +40,7 @@
               class="block text-sm font-medium text-gray-700 dark:text-gray-300"
               for="username"
             >
-              Username
+              {{ $t('userLogin.username') }}
             </label>
             <div class="mt-1">
               <input
@@ -50,7 +50,7 @@
                 class="relative block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-400 dark:focus:ring-blue-400 sm:text-sm"
                 :disabled="loading"
                 name="username"
-                placeholder="Enter your username"
+                :placeholder="$t('userLogin.usernamePlaceholder')"
                 required
                 type="text"
               />
@@ -62,7 +62,7 @@
               class="block text-sm font-medium text-gray-700 dark:text-gray-300"
               for="password"
             >
-              Password
+              {{ $t('userLogin.password') }}
             </label>
             <div class="mt-1">
               <input
@@ -72,7 +72,7 @@
                 class="relative block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-400 dark:focus:ring-blue-400 sm:text-sm"
                 :disabled="loading"
                 name="password"
-                placeholder="Enter your password"
+                :placeholder="$t('userLogin.passwordPlaceholder')"
                 required
                 type="password"
               />
@@ -127,7 +127,7 @@
                   ></path>
                 </svg>
               </span>
-              {{ loading ? 'Signing In...' : 'Sign In' }}
+              {{ loading ? $t('userLogin.signingIn') : $t('userLogin.signIn') }}
             </button>
           </div>
 
@@ -136,7 +136,7 @@
               class="text-sm text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
               to="/admin-login"
             >
-              Admin Login
+              {{ $t('userLogin.adminLogin') }}
             </router-link>
           </div>
         </form>
@@ -148,10 +148,13 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useUserStore } from '@/stores/user'
 import { useThemeStore } from '@/stores/theme'
 import { showToast } from '@/utils/toast'
 import ThemeToggle from '@/components/common/ThemeToggle.vue'
+
+const { t } = useI18n()
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -167,7 +170,7 @@ const form = reactive({
 
 const handleLogin = async () => {
   if (!form.username || !form.password) {
-    error.value = 'Please enter both username and password'
+    error.value = t('userLogin.validationError')
     return
   }
 
@@ -180,11 +183,10 @@ const handleLogin = async () => {
       password: form.password
     })
 
-    showToast('Login successful!', 'success')
+    showToast(t('userLogin.loginSuccess'), 'success')
     router.push('/user-dashboard')
   } catch (err) {
-    console.error('Login error:', err)
-    error.value = err.response?.data?.message || err.message || 'Login failed'
+    error.value = err.response?.data?.message || err.message || t('userLogin.loginFailed')
   } finally {
     loading.value = false
   }

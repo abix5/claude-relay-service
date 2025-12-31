@@ -18,9 +18,11 @@
               <i class="fas fa-clock text-white" />
             </div>
             <div>
-              <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100">修改到期时间</h3>
+              <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100">
+                {{ $t('accounts.expiryModal.title') }}
+              </h3>
               <p class="text-sm text-gray-600 dark:text-gray-400">
-                为 "{{ account.name || 'Account' }}" 设置新的到期时间
+                {{ $t('accounts.expiryModal.subtitle', { name: account.name || 'Account' }) }}
               </p>
             </div>
           </div>
@@ -39,9 +41,10 @@
           >
             <div class="flex items-center justify-between">
               <div>
-                <p class="mb-1 text-xs font-medium text-gray-600 dark:text-gray-400">当前状态</p>
+                <p class="mb-1 text-xs font-medium text-gray-600 dark:text-gray-400">
+                  {{ $t('accounts.expiryModal.currentStatus') }}
+                </p>
                 <p class="text-sm font-semibold text-gray-800 dark:text-gray-200">
-                  <!-- 已设置过期时间 -->
                   <template v-if="account.expiresAt">
                     {{ formatFullExpireDate(account.expiresAt) }}
                     <span
@@ -52,10 +55,9 @@
                       ({{ getExpiryStatus(account.expiresAt).text }})
                     </span>
                   </template>
-                  <!-- 永不过期 -->
                   <template v-else>
                     <i class="fas fa-infinity mr-1 text-gray-500" />
-                    永不过期
+                    {{ $t('accounts.expiryModal.neverExpire') }}
                   </template>
                 </p>
               </div>
@@ -76,9 +78,9 @@
 
           <!-- 快捷选项 -->
           <div>
-            <label class="mb-3 block text-sm font-semibold text-gray-700 dark:text-gray-300"
-              >选择新的期限</label
-            >
+            <label class="mb-3 block text-sm font-semibold text-gray-700 dark:text-gray-300">
+              {{ $t('accounts.expiryModal.selectNewDuration') }}
+            </label>
             <div class="mb-3 grid grid-cols-3 gap-2">
               <button
                 v-for="option in quickOptions"
@@ -103,16 +105,16 @@
                 @click="selectQuickOption('custom')"
               >
                 <i class="fas fa-calendar-alt mr-1" />
-                自定义
+                {{ $t('accounts.expiryModal.custom') }}
               </button>
             </div>
           </div>
 
           <!-- 自定义日期选择 -->
           <div v-if="localForm.expireDuration === 'custom'" class="animate-fadeIn">
-            <label class="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300"
-              >选择日期和时间</label
-            >
+            <label class="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300">
+              {{ $t('accounts.expiryModal.selectDateTime') }}
+            </label>
             <input
               v-model="localForm.customExpireDate"
               class="form-input w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200"
@@ -121,7 +123,7 @@
               @change="updateCustomExpiryPreview"
             />
             <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
-              选择一个未来的日期和时间作为到期时间
+              {{ $t('accounts.expiryModal.selectFutureDateHint') }}
             </p>
           </div>
 
@@ -134,7 +136,7 @@
               <div>
                 <p class="mb-1 text-xs font-medium text-blue-700 dark:text-blue-400">
                   <i class="fas fa-arrow-right mr-1" />
-                  新的到期时间
+                  {{ $t('accounts.expiryModal.newExpireTime') }}
                 </p>
                 <p class="text-sm font-semibold text-blue-900 dark:text-blue-200">
                   <template v-if="localForm.expiresAt">
@@ -149,7 +151,7 @@
                   </template>
                   <template v-else>
                     <i class="fas fa-infinity mr-1" />
-                    永不过期
+                    {{ $t('accounts.expiryModal.neverExpire') }}
                   </template>
                 </p>
               </div>
@@ -167,7 +169,7 @@
               class="flex-1 rounded-lg bg-gray-100 px-4 py-2.5 font-semibold text-gray-700 transition-colors hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
               @click="$emit('close')"
             >
-              取消
+              {{ $t('accounts.expiryModal.cancel') }}
             </button>
             <button
               class="btn btn-primary flex-1 px-4 py-2.5 font-semibold"
@@ -176,7 +178,9 @@
             >
               <div v-if="saving" class="loading-spinner mr-2" />
               <i v-else class="fas fa-save mr-2" />
-              {{ saving ? '保存中...' : '保存更改' }}
+              {{
+                saving ? $t('accounts.expiryModal.saving') : $t('accounts.expiryModal.saveChanges')
+              }}
             </button>
           </div>
         </div>
@@ -187,6 +191,9 @@
 
 <script setup>
 import { ref, reactive, computed, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps({
   show: {
@@ -211,14 +218,14 @@ const localForm = reactive({
 })
 
 // 快捷选项
-const quickOptions = [
-  { value: '', label: '永不过期' },
-  { value: '30d', label: '30 天' },
-  { value: '90d', label: '90 天' },
-  { value: '180d', label: '180 天' },
-  { value: '365d', label: '1 年' },
-  { value: '730d', label: '2 年' }
-]
+const quickOptions = computed(() => [
+  { value: '', label: t('accounts.expiryModal.neverExpire') },
+  { value: '30d', label: t('accounts.expiryModal.duration30d') },
+  { value: '90d', label: t('accounts.expiryModal.duration90d') },
+  { value: '180d', label: t('accounts.expiryModal.duration180d') },
+  { value: '365d', label: t('accounts.expiryModal.duration1y') },
+  { value: '730d', label: t('accounts.expiryModal.duration2y') }
+])
 
 // 计算最小日期时间
 const minDateTime = computed(() => {
@@ -315,13 +322,12 @@ const updateCustomExpiryPreview = () => {
 
       // 验证日期有效性
       if (isNaN(localDate.getTime())) {
-        console.error('Invalid date:', localForm.customExpireDate)
         return
       }
 
       localForm.expiresAt = localDate.toISOString()
     } catch (error) {
-      console.error('Failed to parse custom expire date:', error)
+      /* ignored */
     }
   }
 }
@@ -356,22 +362,22 @@ const getExpiryStatus = (expiresAt) => {
 
   if (diffMs < 0) {
     return {
-      text: '已过期',
+      text: t('accounts.expiryModal.expired'),
       class: 'text-red-600'
     }
   } else if (diffDays <= 7) {
     return {
-      text: `${diffDays} 天后过期`,
+      text: t('accounts.expiryModal.expiresInDays', { days: diffDays }),
       class: 'text-orange-600'
     }
   } else if (diffDays <= 30) {
     return {
-      text: `${diffDays} 天后过期`,
+      text: t('accounts.expiryModal.expiresInDays', { days: diffDays }),
       class: 'text-yellow-600'
     }
   } else {
     return {
-      text: `${Math.ceil(diffDays / 30)} 个月后过期`,
+      text: t('accounts.expiryModal.expiresInMonths', { months: Math.ceil(diffDays / 30) }),
       class: 'text-green-600'
     }
   }

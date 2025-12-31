@@ -9,10 +9,12 @@
             >
               <i class="fas fa-clock text-white" />
             </div>
-            <h3 class="text-xl font-bold text-gray-900">续期 API Key</h3>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white">
+              {{ $t('renewApiKeyModal.title') }}
+            </h3>
           </div>
           <button
-            class="text-gray-400 transition-colors hover:text-gray-600"
+            class="text-gray-400 transition-colors hover:text-gray-600 dark:hover:text-gray-300"
             @click="$emit('close')"
           >
             <i class="fas fa-times text-xl" />
@@ -20,7 +22,9 @@
         </div>
 
         <div class="modal-scroll-content custom-scrollbar flex-1 space-y-6">
-          <div class="rounded-lg border border-blue-200 bg-blue-50 p-4">
+          <div
+            class="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-900/30"
+          >
             <div class="flex items-start gap-3">
               <div
                 class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-blue-500"
@@ -28,13 +32,18 @@
                 <i class="fas fa-info text-sm text-white" />
               </div>
               <div>
-                <h4 class="mb-1 font-semibold text-gray-800">API Key 信息</h4>
-                <p class="text-sm text-gray-700">
+                <h4 class="mb-1 font-semibold text-gray-800 dark:text-gray-200">
+                  {{ $t('renewApiKeyModal.infoTitle') }}
+                </h4>
+                <p class="text-sm text-gray-700 dark:text-gray-300">
                   {{ apiKey.name }}
                 </p>
-                <p class="mt-1 text-xs text-gray-600">
-                  当前过期时间：{{
-                    apiKey.expiresAt ? formatExpireDate(apiKey.expiresAt) : '永不过期'
+                <p class="mt-1 text-xs text-gray-600 dark:text-gray-400">
+                  {{ $t('renewApiKeyModal.currentExpireTime')
+                  }}{{
+                    apiKey.expiresAt
+                      ? formatExpireDate(apiKey.expiresAt)
+                      : $t('renewApiKeyModal.neverExpires')
                   }}
                 </p>
               </div>
@@ -42,19 +51,21 @@
           </div>
 
           <div>
-            <label class="mb-3 block text-sm font-semibold text-gray-700">续期时长</label>
+            <label class="mb-3 block text-sm font-semibold text-gray-700 dark:text-gray-300">{{
+              $t('renewApiKeyModal.renewalDuration')
+            }}</label>
             <select
               v-model="form.renewDuration"
               class="form-input w-full"
               @change="updateRenewExpireAt"
             >
-              <option value="7d">延长 7 天</option>
-              <option value="30d">延长 30 天</option>
-              <option value="90d">延长 90 天</option>
-              <option value="180d">延长 180 天</option>
-              <option value="365d">延长 365 天</option>
-              <option value="custom">自定义日期</option>
-              <option value="permanent">设为永不过期</option>
+              <option value="7d">{{ $t('renewApiKeyModal.extend7Days') }}</option>
+              <option value="30d">{{ $t('renewApiKeyModal.extend30Days') }}</option>
+              <option value="90d">{{ $t('renewApiKeyModal.extend90Days') }}</option>
+              <option value="180d">{{ $t('renewApiKeyModal.extend180Days') }}</option>
+              <option value="365d">{{ $t('renewApiKeyModal.extend365Days') }}</option>
+              <option value="custom">{{ $t('renewApiKeyModal.customDate') }}</option>
+              <option value="permanent">{{ $t('renewApiKeyModal.setNeverExpires') }}</option>
             </select>
             <div v-if="form.renewDuration === 'custom'" class="mt-3">
               <input
@@ -65,19 +76,20 @@
                 @change="updateCustomRenewExpireAt"
               />
             </div>
-            <p v-if="form.newExpiresAt" class="mt-2 text-xs text-gray-500">
-              新的过期时间：{{ formatExpireDate(form.newExpiresAt) }}
+            <p v-if="form.newExpiresAt" class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+              {{ $t('renewApiKeyModal.newExpireTime') }}
+              {{ formatExpireDate(form.newExpiresAt) }}
             </p>
           </div>
         </div>
 
         <div class="flex gap-3 pt-4">
           <button
-            class="flex-1 rounded-xl bg-gray-100 px-6 py-3 font-semibold text-gray-700 transition-colors hover:bg-gray-200"
+            class="flex-1 rounded-xl bg-gray-100 px-6 py-3 font-semibold text-gray-700 transition-colors hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
             type="button"
             @click="$emit('close')"
           >
-            取消
+            {{ $t('common.cancel') }}
           </button>
           <button
             class="btn btn-primary flex-1 px-6 py-3 font-semibold"
@@ -87,7 +99,7 @@
           >
             <div v-if="loading" class="loading-spinner mr-2" />
             <i v-else class="fas fa-clock mr-2" />
-            {{ loading ? '续期中...' : '确认续期' }}
+            {{ loading ? $t('renewApiKeyModal.renewing') : $t('renewApiKeyModal.confirmRenewal') }}
           </button>
         </div>
       </div>
@@ -97,8 +109,11 @@
 
 <script setup>
 import { ref, reactive, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { showToast } from '@/utils/toast'
 import { apiClient } from '@/config/api'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
   apiKey: {
@@ -209,14 +224,14 @@ const renewApiKey = async () => {
     const result = await apiClient.put(`/admin/api-keys/${props.apiKey.id}`, data)
 
     if (result.success) {
-      showToast('API Key 续期成功', 'success')
+      showToast($t('renewApiKeyModal.renewSuccess'), 'success')
       emit('success')
       emit('close')
     } else {
-      showToast(result.message || '续期失败', 'error')
+      showToast(result.message || $t('renewApiKeyModal.renewFailed'), 'error')
     }
   } catch (error) {
-    showToast('续期失败', 'error')
+    showToast($t('renewApiKeyModal.renewFailed'), 'error')
   } finally {
     loading.value = false
   }

@@ -3,9 +3,11 @@
     <!-- Header -->
     <div class="sm:flex sm:items-center">
       <div class="sm:flex-auto">
-        <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">User Management</h1>
+        <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">
+          {{ $t('userManagement.title') }}
+        </h1>
         <p class="mt-2 text-sm text-gray-700 dark:text-gray-300">
-          Manage users, their API keys, and view usage statistics
+          {{ $t('userManagement.subtitle') }}
         </p>
       </div>
       <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
@@ -22,7 +24,7 @@
               stroke-width="2"
             />
           </svg>
-          Refresh
+          {{ $t('userManagement.refresh') }}
         </button>
       </div>
     </div>
@@ -50,7 +52,7 @@
             <div class="ml-5 w-0 flex-1">
               <dl>
                 <dt class="truncate text-sm font-medium text-gray-500 dark:text-gray-400">
-                  Total Users
+                  {{ $t('userManagement.stats.totalUsers') }}
                 </dt>
                 <dd class="text-lg font-medium text-gray-900 dark:text-white">
                   {{ userStats?.totalUsers || 0 }}
@@ -82,7 +84,7 @@
             <div class="ml-5 w-0 flex-1">
               <dl>
                 <dt class="truncate text-sm font-medium text-gray-500 dark:text-gray-400">
-                  Active Users
+                  {{ $t('userManagement.stats.activeUsers') }}
                 </dt>
                 <dd class="text-lg font-medium text-gray-900 dark:text-white">
                   {{ userStats?.activeUsers || 0 }}
@@ -114,7 +116,7 @@
             <div class="ml-5 w-0 flex-1">
               <dl>
                 <dt class="truncate text-sm font-medium text-gray-500 dark:text-gray-400">
-                  Total API Keys
+                  {{ $t('userManagement.stats.totalApiKeys') }}
                 </dt>
                 <dd class="text-lg font-medium text-gray-900 dark:text-white">
                   {{ userStats?.totalApiKeys || 0 }}
@@ -146,7 +148,7 @@
             <div class="ml-5 w-0 flex-1">
               <dl>
                 <dt class="truncate text-sm font-medium text-gray-500 dark:text-gray-400">
-                  Total Cost
+                  {{ $t('userManagement.stats.totalCost') }}
                 </dt>
                 <dd class="text-lg font-medium text-gray-900 dark:text-white">
                   ${{ (userStats?.totalUsage?.totalCost || 0).toFixed(4) }}
@@ -184,7 +186,7 @@
                 <input
                   v-model="searchQuery"
                   class="block w-full rounded-md border-gray-300 pl-10 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:text-sm"
-                  placeholder="Search users..."
+                  :placeholder="$t('userManagement.filters.searchPlaceholder')"
                   type="search"
                   @input="debouncedSearch"
                 />
@@ -198,9 +200,9 @@
                 class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:text-sm"
                 @change="loadUsers"
               >
-                <option value="">All Roles</option>
-                <option value="user">User</option>
-                <option value="admin">Admin</option>
+                <option value="">{{ $t('userManagement.filters.allRoles') }}</option>
+                <option value="user">{{ $t('userManagement.filters.roleUser') }}</option>
+                <option value="admin">{{ $t('userManagement.filters.roleAdmin') }}</option>
               </select>
             </div>
 
@@ -211,9 +213,9 @@
                 class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:text-sm"
                 @change="loadUsers"
               >
-                <option value="">All Status</option>
-                <option value="true">Active</option>
-                <option value="false">Disabled</option>
+                <option value="">{{ $t('userManagement.filters.allStatus') }}</option>
+                <option value="true">{{ $t('userManagement.filters.statusActive') }}</option>
+                <option value="false">{{ $t('userManagement.filters.statusDisabled') }}</option>
               </select>
             </div>
           </div>
@@ -225,7 +227,7 @@
     <div class="overflow-hidden bg-white shadow dark:bg-gray-800 sm:rounded-md">
       <div class="border-b border-gray-200 px-4 py-5 dark:border-gray-700 sm:px-6">
         <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-white">
-          Users
+          {{ $t('userManagement.table.title') }}
           <span v-if="!loading" class="text-sm text-gray-500 dark:text-gray-400"
             >({{ filteredUsers.length }} of {{ users.length }})</span
           >
@@ -254,7 +256,9 @@
             fill="currentColor"
           ></path>
         </svg>
-        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Loading users...</p>
+        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+          {{ $t('userManagement.table.loading') }}
+        </p>
       </div>
 
       <!-- Users List -->
@@ -299,7 +303,11 @@
                           : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
                       ]"
                     >
-                      {{ user.isActive ? 'Active' : 'Disabled' }}
+                      {{
+                        user.isActive
+                          ? $t('userManagement.table.active')
+                          : $t('userManagement.table.disabled')
+                      }}
                     </span>
                     <span
                       :class="[
@@ -318,18 +326,25 @@
                 >
                   <span>@{{ user.username }}</span>
                   <span v-if="user.email">{{ user.email }}</span>
-                  <span>{{ user.apiKeyCount || 0 }} API keys</span>
+                  <span>{{ user.apiKeyCount || 0 }} {{ $t('userManagement.table.apiKeys') }}</span>
                   <span v-if="user.lastLoginAt"
-                    >Last login: {{ formatDate(user.lastLoginAt) }}</span
+                    >{{ $t('userManagement.table.lastLogin') }}:
+                    {{ formatDate(user.lastLoginAt) }}</span
                   >
-                  <span v-else>Never logged in</span>
+                  <span v-else>{{ $t('userManagement.table.neverLoggedIn') }}</span>
                 </div>
                 <div
                   v-if="user.totalUsage"
                   class="mt-1 flex items-center space-x-4 text-xs text-gray-400 dark:text-gray-500"
                 >
-                  <span>{{ formatNumber(user.totalUsage.requests || 0) }} requests</span>
-                  <span>${{ (user.totalUsage.totalCost || 0).toFixed(4) }} total cost</span>
+                  <span
+                    >{{ formatNumber(user.totalUsage.requests || 0) }}
+                    {{ $t('userManagement.table.requests') }}</span
+                  >
+                  <span
+                    >${{ (user.totalUsage.totalCost || 0).toFixed(4) }}
+                    {{ $t('userManagement.table.totalCost') }}</span
+                  >
                 </div>
               </div>
             </div>
@@ -337,7 +352,7 @@
               <!-- View Usage Stats -->
               <button
                 class="inline-flex items-center rounded border border-transparent p-1 text-gray-400 hover:text-blue-600"
-                title="View Usage Stats"
+                :title="$t('userManagement.actions.viewUsageStats')"
                 @click="viewUserStats(user)"
               >
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -354,7 +369,7 @@
               <button
                 class="inline-flex items-center rounded border border-transparent p-1 text-gray-400 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
                 :disabled="user.apiKeyCount === 0"
-                title="Disable All API Keys"
+                :title="$t('userManagement.actions.disableAllApiKeys')"
                 @click="disableUserApiKeys(user)"
               >
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -375,7 +390,11 @@
                     ? 'text-gray-400 hover:text-red-600'
                     : 'text-gray-400 hover:text-green-600'
                 ]"
-                :title="user.isActive ? 'Disable User' : 'Enable User'"
+                :title="
+                  user.isActive
+                    ? $t('userManagement.actions.disableUser')
+                    : $t('userManagement.actions.enableUser')
+                "
                 @click="toggleUserStatus(user)"
               >
                 <svg
@@ -405,7 +424,7 @@
               <!-- Change Role -->
               <button
                 class="inline-flex items-center rounded border border-transparent p-1 text-gray-400 hover:text-purple-600"
-                title="Change Role"
+                :title="$t('userManagement.actions.changeRole')"
                 @click="changeUserRole(user)"
               >
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -437,10 +456,12 @@
             stroke-width="2"
           />
         </svg>
-        <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">No users found</h3>
+        <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">
+          {{ $t('userManagement.empty.title') }}
+        </h3>
         <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
           {{
-            searchQuery ? 'No users match your search criteria.' : 'No users have been created yet.'
+            searchQuery ? $t('userManagement.empty.noMatch') : $t('userManagement.empty.noUsers')
           }}
         </p>
       </div>
@@ -476,12 +497,15 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { apiClient } from '@/config/api'
 import { showToast } from '@/utils/toast'
 import { debounce } from 'lodash-es'
 import UserUsageStatsModal from '@/components/admin/UserUsageStatsModal.vue'
 import ChangeRoleModal from '@/components/admin/ChangeRoleModal.vue'
 import ConfirmModal from '@/components/common/ConfirmModal.vue'
+
+const { t } = useI18n()
 
 const loading = ref(true)
 const users = ref([])
@@ -576,8 +600,7 @@ const loadUsers = async () => {
       userStats.value = statsResponse.stats
     }
   } catch (error) {
-    console.error('Failed to load users:', error)
-    showToast('Failed to load users', 'error')
+    showToast(t('userManagement.toast.loadFailed'), 'error')
   } finally {
     loading.value = false
   }
@@ -595,11 +618,15 @@ const viewUserStats = (user) => {
 const toggleUserStatus = (user) => {
   selectedUser.value = user
   confirmAction.value = {
-    title: user.isActive ? 'Disable User' : 'Enable User',
+    title: user.isActive
+      ? t('userManagement.confirm.disableUserTitle')
+      : t('userManagement.confirm.enableUserTitle'),
     message: user.isActive
-      ? `Are you sure you want to disable user "${user.username}"? This will prevent them from logging in.`
-      : `Are you sure you want to enable user "${user.username}"?`,
-    confirmText: user.isActive ? 'Disable' : 'Enable',
+      ? t('userManagement.confirm.disableUserMessage', { username: user.username })
+      : t('userManagement.confirm.enableUserMessage', { username: user.username }),
+    confirmText: user.isActive
+      ? t('userManagement.confirm.disableButton')
+      : t('userManagement.confirm.enableButton'),
     confirmClass: user.isActive ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700',
     action: 'toggleStatus'
   }
@@ -611,9 +638,12 @@ const disableUserApiKeys = (user) => {
 
   selectedUser.value = user
   confirmAction.value = {
-    title: 'Disable All API Keys',
-    message: `Are you sure you want to disable all ${user.apiKeyCount} API keys for user "${user.username}"? This will prevent them from using the service.`,
-    confirmText: 'Disable Keys',
+    title: t('userManagement.confirm.disableKeysTitle'),
+    message: t('userManagement.confirm.disableKeysMessage', {
+      count: user.apiKeyCount,
+      username: user.username
+    }),
+    confirmText: t('userManagement.confirm.disableKeysButton'),
     confirmClass: 'bg-red-600 hover:bg-red-700',
     action: 'disableKeys'
   }
@@ -640,19 +670,26 @@ const handleConfirmAction = async () => {
         if (userIndex !== -1) {
           users.value[userIndex].isActive = !user.isActive
         }
-        showToast(`User ${user.isActive ? 'disabled' : 'enabled'} successfully`, 'success')
+        showToast(
+          user.isActive
+            ? t('userManagement.toast.userDisabled')
+            : t('userManagement.toast.userEnabled'),
+          'success'
+        )
       }
     } else if (action === 'disableKeys') {
       const response = await apiClient.post(`/users/${user.id}/disable-keys`)
 
       if (response.success) {
-        showToast(`Disabled ${response.disabledCount} API keys`, 'success')
+        showToast(
+          t('userManagement.toast.keysDisabled', { count: response.disabledCount }),
+          'success'
+        )
         await loadUsers() // Refresh to get updated counts
       }
     }
   } catch (error) {
-    console.error(`Failed to ${action}:`, error)
-    showToast(`Failed to ${action}`, 'error')
+    showToast(t('userManagement.toast.actionFailed', { action }), 'error')
   } finally {
     showConfirmModal.value = false
     selectedUser.value = null

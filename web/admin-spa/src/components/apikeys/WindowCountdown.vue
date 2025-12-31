@@ -8,20 +8,22 @@
       </span>
       <span v-else-if="windowState === 'expired'" class="font-medium text-orange-600">
         <i class="fas fa-sync-alt mr-1" />
-        窗口已过期
+        {{ $t('apiKeys.windowCountdown.windowExpired') }}
       </span>
       <span v-else-if="windowState === 'notStarted'" class="font-medium text-gray-500">
         <i class="fas fa-pause-circle mr-1" />
-        窗口未激活
+        {{ $t('apiKeys.windowCountdown.windowNotActivated') }}
       </span>
-      <span v-else class="font-medium text-gray-400"> {{ rateLimitWindow }} 分钟 </span>
+      <span v-else class="font-medium text-gray-400">
+        {{ rateLimitWindow }} {{ $t('apiKeys.windowCountdown.minutes') }}
+      </span>
     </div>
 
     <!-- 进度条（仅在有限制时显示） -->
     <div v-if="showProgress" class="space-y-0.5">
       <div v-if="hasRequestLimit" class="space-y-0.5">
         <div class="flex items-center justify-between text-xs">
-          <span class="text-gray-400">请求</span>
+          <span class="text-gray-400">{{ $t('apiKeys.windowCountdown.requests') }}</span>
           <span class="text-gray-600"> {{ currentRequests || 0 }}/{{ requestLimit }} </span>
         </div>
         <div class="h-1 w-full rounded-full bg-gray-200">
@@ -53,7 +55,7 @@
       <!-- 费用限制（新功能） -->
       <div v-if="hasCostLimit" class="space-y-0.5">
         <div class="flex items-center justify-between text-xs">
-          <span class="text-gray-400">费用</span>
+          <span class="text-gray-400">{{ $t('apiKeys.windowCountdown.cost') }}</span>
           <span class="text-gray-600">
             ${{ (currentCost || 0).toFixed(2) }}/${{ costLimit.toFixed(2) }}
           </span>
@@ -71,22 +73,29 @@
     <!-- 额外提示信息 -->
     <div v-if="windowState === 'active' && showTooltip" class="text-xs text-gray-500">
       <i class="fas fa-info-circle mr-1" />
-      <span v-if="remainingSeconds < 60">即将重置</span>
+      <span v-if="remainingSeconds < 60">{{ $t('apiKeys.windowCountdown.aboutToReset') }}</span>
       <span v-else-if="remainingSeconds < 300"
-        >{{ Math.ceil(remainingSeconds / 60) }} 分钟后重置</span
+        >{{ Math.ceil(remainingSeconds / 60) }}
+        {{ $t('apiKeys.windowCountdown.resetInMinutes') }}</span
       >
-      <span v-else>{{ formatDetailedTime(remainingSeconds) }}后重置</span>
+      <span v-else
+        >{{ formatDetailedTime(remainingSeconds)
+        }}{{ $t('apiKeys.windowCountdown.resetAfter') }}</span
+      >
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps({
   label: {
     type: String,
-    default: '窗口限制'
+    default: 'Window Limit'
   },
   rateLimitWindow: {
     type: Number,
@@ -182,9 +191,9 @@ const formatDetailedTime = (seconds) => {
   const minutes = Math.floor((seconds % 3600) / 60)
 
   if (hours > 0) {
-    return `${hours}小时${minutes}分钟`
+    return `${hours}${t('apiKeys.windowCountdown.hours')}${minutes}${t('apiKeys.windowCountdown.minutes')}`
   } else {
-    return `${minutes}分钟`
+    return `${minutes}${t('apiKeys.windowCountdown.minutes')}`
   }
 }
 
@@ -244,7 +253,7 @@ const updateCountdown = () => {
     remainingSeconds.value = remaining
 
     if (remaining === 0) {
-      // 窗口已过期，停止倒计时
+      // Window expired, stop countdown
       if (intervalId) {
         clearInterval(intervalId)
         intervalId = null

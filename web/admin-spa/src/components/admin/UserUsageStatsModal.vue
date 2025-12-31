@@ -408,7 +408,6 @@ const loadUsageStats = async () => {
       userDetails.value = userResponse.user
     }
   } catch (error) {
-    console.error('Failed to load user usage stats:', error)
     showToast('Failed to load usage statistics', 'error')
   } finally {
     loading.value = false

@@ -232,7 +232,6 @@ const handleSubmit = async () => {
       error.value = response.message || 'Failed to update user role'
     }
   } catch (err) {
-    console.error('Update user role error:', err)
     error.value = err.response?.data?.message || err.message || 'Failed to update user role'
   } finally {
     loading.value = false

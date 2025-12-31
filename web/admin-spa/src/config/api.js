@@ -122,13 +122,8 @@ class ApiClient {
       method: 'GET'
     })
 
-    try {
-      const response = await fetch(fullUrl, config)
-      return await this.handleResponse(response)
-    } catch (error) {
-      console.error('API GET Error:', error)
-      throw error
-    }
+    const response = await fetch(fullUrl, config)
+    return await this.handleResponse(response)
   }
 
   // POST 请求
@@ -140,13 +135,8 @@ class ApiClient {
       body: data ? JSON.stringify(data) : undefined
     })
 
-    try {
-      const response = await fetch(fullUrl, config)
-      return await this.handleResponse(response)
-    } catch (error) {
-      console.error('API POST Error:', error)
-      throw error
-    }
+    const response = await fetch(fullUrl, config)
+    return await this.handleResponse(response)
   }
 
   // PUT 请求
@@ -158,13 +148,8 @@ class ApiClient {
       body: data ? JSON.stringify(data) : undefined
     })
 
-    try {
-      const response = await fetch(fullUrl, config)
-      return await this.handleResponse(response)
-    } catch (error) {
-      console.error('API PUT Error:', error)
-      throw error
-    }
+    const response = await fetch(fullUrl, config)
+    return await this.handleResponse(response)
   }
 
   // PATCH 请求
@@ -176,13 +161,8 @@ class ApiClient {
       body: data ? JSON.stringify(data) : undefined
     })
 
-    try {
-      const response = await fetch(fullUrl, config)
-      return await this.handleResponse(response)
-    } catch (error) {
-      console.error('API PATCH Error:', error)
-      throw error
-    }
+    const response = await fetch(fullUrl, config)
+    return await this.handleResponse(response)
   }
 
   // DELETE 请求
@@ -196,13 +176,8 @@ class ApiClient {
       body: data ? JSON.stringify(data) : undefined
     })
 
-    try {
-      const response = await fetch(fullUrl, config)
-      return await this.handleResponse(response)
-    } catch (error) {
-      console.error('API DELETE Error:', error)
-      throw error
-    }
+    const response = await fetch(fullUrl, config)
+    return await this.handleResponse(response)
   }
 }
 

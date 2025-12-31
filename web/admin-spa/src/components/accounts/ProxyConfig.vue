@@ -1,14 +1,18 @@
 <template>
   <div class="space-y-4">
     <div class="flex items-center justify-between">
-      <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300">代理设置 (可选)</h4>
+      <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300">
+        {{ t('accounts.form.proxySettings') }}
+      </h4>
       <label class="flex cursor-pointer items-center">
         <input
           v-model="proxy.enabled"
           class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-blue-500"
           type="checkbox"
         />
-        <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">启用代理</span>
+        <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">{{
+          t('accounts.form.enableProxy')
+        }}</span>
       </label>
     </div>
 
@@ -22,10 +26,10 @@
         </div>
         <div class="flex-1">
           <p class="text-sm text-gray-700 dark:text-gray-300">
-            配置代理以访问受限的网络资源。支持 SOCKS5 和 HTTP 代理。
+            {{ t('accounts.form.proxyDescription') }}
           </p>
           <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-            请确保代理服务器稳定可用，否则会影响账户的正常使用。
+            {{ t('accounts.form.proxyWarning') }}
           </p>
         </div>
       </div>
@@ -33,16 +37,16 @@
       <!-- 快速配置输入框 -->
       <div>
         <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-          快速配置
+          {{ t('accounts.form.quickConfigLabel') }}
           <span class="ml-1 text-xs font-normal text-gray-500 dark:text-gray-400">
-            (粘贴完整代理URL自动填充)
+            ({{ t('accounts.form.quickConfigHintText') }})
           </span>
         </label>
         <div class="relative">
           <input
             v-model="proxyUrl"
             class="form-input w-full border-gray-300 pr-10 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:placeholder-gray-400"
-            placeholder="例如: socks5://username:password@host:port 或 http://host:port"
+            :placeholder="t('accounts.form.proxyUrlExample')"
             type="text"
             @input="handleInput"
             @keyup.enter="parseProxyUrl"
@@ -63,16 +67,16 @@
         </p>
         <p v-else-if="parseSuccess" class="mt-1 text-xs text-green-500">
           <i class="fas fa-check-circle mr-1" />
-          代理配置已自动填充
+          {{ t('accounts.form.proxyConfigFilled') }}
         </p>
       </div>
 
       <div class="my-3 border-t border-gray-200 dark:border-gray-600"></div>
 
       <div>
-        <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
-          >代理类型</label
-        >
+        <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">{{
+          t('accounts.form.proxyType')
+        }}</label>
         <select
           v-model="proxy.type"
           class="form-input w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200"
@@ -85,24 +89,24 @@
 
       <div class="grid grid-cols-2 gap-4">
         <div>
-          <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
-            >主机地址</label
-          >
+          <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">{{
+            t('accounts.form.hostAddress')
+          }}</label>
           <input
             v-model="proxy.host"
             class="form-input w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:placeholder-gray-400"
-            placeholder="例如: 192.168.1.100"
+            :placeholder="t('accounts.form.hostExample')"
             type="text"
           />
         </div>
         <div>
-          <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
-            >端口</label
-          >
+          <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">{{
+            t('accounts.form.port')
+          }}</label>
           <input
             v-model="proxy.port"
             class="form-input w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:placeholder-gray-400"
-            placeholder="例如: 1080"
+            :placeholder="t('accounts.form.portExample')"
             type="number"
           />
         </div>
@@ -120,31 +124,31 @@
             class="ml-2 cursor-pointer text-sm text-gray-700 dark:text-gray-300"
             for="proxyAuth"
           >
-            需要身份验证
+            {{ t('accounts.form.authRequired') }}
           </label>
         </div>
 
         <div v-if="showAuth" class="grid grid-cols-2 gap-4">
           <div>
-            <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
-              >用户名</label
-            >
+            <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">{{
+              t('accounts.form.username')
+            }}</label>
             <input
               v-model="proxy.username"
               class="form-input w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:placeholder-gray-400"
-              placeholder="代理用户名"
+              :placeholder="t('accounts.form.proxyUsername')"
               type="text"
             />
           </div>
           <div>
-            <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
-              >密码</label
-            >
+            <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">{{
+              t('accounts.form.password')
+            }}</label>
             <div class="relative">
               <input
                 v-model="proxy.password"
                 class="form-input w-full border-gray-300 pr-10 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:placeholder-gray-400"
-                placeholder="代理密码"
+                :placeholder="t('accounts.form.proxyPassword')"
                 :type="showPassword ? 'text' : 'password'"
               />
               <button
@@ -164,8 +168,7 @@
       >
         <p class="text-xs text-blue-700 dark:text-blue-300">
           <i class="fas fa-info-circle mr-1" />
-          <strong>提示：</strong
-          >代理设置将用于所有与此账户相关的API请求。请确保代理服务器支持HTTPS流量转发。
+          {{ t('accounts.form.proxyNote') }}
         </p>
       </div>
     </div>
@@ -174,6 +177,9 @@
 
 <script setup>
 import { ref, watch, onUnmounted } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps({
   modelValue: {
@@ -334,7 +340,7 @@ function parseProxyUrl() {
         return
       }
 
-      parseError.value = '无效的代理URL格式，请检查输入'
+      parseError.value = t('accounts.form.invalidProxyUrlFormat')
       return
     }
 
@@ -366,7 +372,7 @@ function parseProxyUrl() {
     }, 3000)
   } catch (error) {
     // 解析代理URL失败
-    parseError.value = '解析失败，请检查URL格式'
+    parseError.value = t('accounts.form.parseFailed')
   }
 }
 

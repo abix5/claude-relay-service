@@ -2,6 +2,23 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { apiClient } from '@/config/api'
 import { showToast } from '@/utils/toast'
+import i18n from '@/i18n'
+
+const { t } = i18n.global
+
+// Helper function to get account group label translation
+function getAccountGroupLabel(group) {
+  const groupLabels = {
+    claude: 'dashboard.claudeAccounts',
+    'claude-console': 'dashboard.claudeAccounts',
+    gemini: 'dashboard.geminiAccounts',
+    openai: 'dashboard.openaiAccounts',
+    azure_openai: 'dashboard.azureAccounts',
+    bedrock: 'dashboard.bedrockAccounts',
+    droid: 'dashboard.droidAccounts'
+  }
+  return t(groupLabels[group] || 'dashboard.claudeAccounts')
+}
 
 export const useDashboardStore = defineStore('dashboard', () => {
   // 状态
@@ -41,7 +58,7 @@ export const useDashboardStore = defineStore('dashboard', () => {
     realtimeTPM: 0,
     metricsWindow: 5,
     isHistoricalMetrics: false,
-    systemStatus: '正常',
+    systemStatus: t('dashboard.statusNormal'),
     uptime: 0,
     systemTimezone: 8 // 默认 UTC+8
   })
@@ -64,7 +81,7 @@ export const useDashboardStore = defineStore('dashboard', () => {
     topAccounts: [],
     totalAccounts: 0,
     group: 'claude',
-    groupLabel: 'Claude账户'
+    groupLabel: t('dashboard.claudeAccounts')
   })
 
   // 本地偏好
@@ -78,14 +95,14 @@ export const useDashboardStore = defineStore('dashboard', () => {
   const getPresetOptions = (granularity) =>
     granularity === 'hour'
       ? [
-          { value: 'last24h', label: '近24小时', hours: 24 },
-          { value: 'yesterday', label: '昨天', hours: 24 },
-          { value: 'dayBefore', label: '前天', hours: 24 }
+          { value: 'last24h', labelKey: 'dashboard.last24Hours', hours: 24 },
+          { value: 'yesterday', labelKey: 'dashboard.yesterday', hours: 24 },
+          { value: 'dayBefore', labelKey: 'dashboard.dayBeforeYesterday', hours: 24 }
         ]
       : [
-          { value: 'today', label: '今日', days: 1 },
-          { value: '7days', label: '7天', days: 7 },
-          { value: '30days', label: '30天', days: 30 }
+          { value: 'today', labelKey: 'dashboard.today', days: 1 },
+          { value: '7days', labelKey: 'dashboard.7days', days: 7 },
+          { value: '30days', labelKey: 'dashboard.30days', days: 30 }
         ]
 
   const readFromStorage = (key, fallback) => {
@@ -147,11 +164,11 @@ export const useDashboardStore = defineStore('dashboard', () => {
     const minutes = Math.floor((seconds % 3600) / 60)
 
     if (days > 0) {
-      return `${days}天 ${hours}小时`
+      return `${days} ${t('dashboard.days')} ${hours} ${t('dashboard.hours')}`
     } else if (hours > 0) {
-      return `${hours}小时 ${minutes}分钟`
+      return `${hours} ${t('dashboard.hours')} ${minutes} ${t('dashboard.minutes')}`
     } else {
-      return `${minutes}分钟`
+      return `${minutes} ${t('dashboard.minutes')}`
     }
   })
 
@@ -271,7 +288,9 @@ export const useDashboardStore = defineStore('dashboard', () => {
           realtimeTPM: realtimeMetrics.tpm || 0,
           metricsWindow: realtimeMetrics.windowMinutes || 5,
           isHistoricalMetrics: realtimeMetrics.isHistorical || false,
-          systemStatus: systemHealth.redisConnected ? '正常' : '异常',
+          systemStatus: systemHealth.redisConnected
+            ? t('dashboard.statusNormal')
+            : t('dashboard.statusAbnormal'),
           uptime: systemHealth.uptime || 0,
           systemTimezone: dashboardResponse.data.systemTimezone || 8
         }
@@ -743,14 +762,14 @@ export const useDashboardStore = defineStore('dashboard', () => {
         // 小时粒度：限制 24 小时
         const hoursDiff = (end - start) / (1000 * 60 * 60)
         if (hoursDiff > 24) {
-          showToast('小时粒度下日期范围不能超过24小时', 'warning')
+          showToast(t('dashboard.dateRangeExceedsHourly'), 'warning')
           return
         }
       } else {
         // 天粒度：限制 31 天
         const daysDiff = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1
         if (daysDiff > 31) {
-          showToast('日期范围不能超过 31 天', 'warning')
+          showToast(t('dashboard.dateRangeExceedsDaily'), 'warning')
           return
         }
       }
@@ -781,7 +800,7 @@ export const useDashboardStore = defineStore('dashboard', () => {
         const end = new Date(dateFilter.value.customRange[1])
         const hoursDiff = (end - start) / (1000 * 60 * 60)
         if (hoursDiff > 24) {
-          showToast('小时粒度下日期范围不能超过24小时，已切换到近24小时', 'warning')
+          showToast(t('dashboard.switchedToLast24Hours'), 'warning')
           setDateFilterPreset('last24h', { silent, skipSave })
           return
         }

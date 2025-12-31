@@ -9,8 +9,12 @@
       <span class="text-xs text-gray-500 dark:text-gray-400">/</span>
       <span class="text-xs">${{ limit.toFixed(2) }}</span>
     </div>
-    <!-- 小型进度条 -->
-    <div class="h-1 w-12 rounded-full bg-gray-200 dark:bg-gray-600">
+    <!-- Small Progress Bar -->
+    <div
+      :aria-label="t('apiKeys.limitBadge.smallProgressBar')"
+      :title="t('apiKeys.limitBadge.smallProgressBar')"
+      class="h-1 w-12 rounded-full bg-gray-200 dark:bg-gray-600"
+    >
       <div
         class="h-1 rounded-full transition-all duration-300"
         :class="progressClass"
@@ -22,6 +26,9 @@
 
 <script setup>
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps({
   type: {
