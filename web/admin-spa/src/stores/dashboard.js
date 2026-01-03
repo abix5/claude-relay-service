@@ -6,20 +6,6 @@ import i18n from '@/i18n'
 
 const { t } = i18n.global
 
-// Helper function to get account group label translation
-function getAccountGroupLabel(group) {
-  const groupLabels = {
-    claude: 'dashboard.claudeAccounts',
-    'claude-console': 'dashboard.claudeAccounts',
-    gemini: 'dashboard.geminiAccounts',
-    openai: 'dashboard.openaiAccounts',
-    azure_openai: 'dashboard.azureAccounts',
-    bedrock: 'dashboard.bedrockAccounts',
-    droid: 'dashboard.droidAccounts'
-  }
-  return t(groupLabels[group] || 'dashboard.claudeAccounts')
-}
-
 export const useDashboardStore = defineStore('dashboard', () => {
   // 状态
   const loading = ref(false)

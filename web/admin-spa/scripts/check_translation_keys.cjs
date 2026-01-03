@@ -37,21 +37,6 @@ function getAllKeys(obj, prefix = '') {
   return keys.sort()
 }
 
-// Функция для получения структуры объекта (только ключи, без значений)
-function getObjectStructure(obj) {
-  const result = {}
-
-  for (const key in obj) {
-    if (typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
-      result[key] = getObjectStructure(obj[key])
-    } else {
-      result[key] = typeof obj[key]
-    }
-  }
-
-  return result
-}
-
 // Получаем все ключи
 const enKeys = getAllKeys(enData)
 const ruKeys = getAllKeys(ruData)

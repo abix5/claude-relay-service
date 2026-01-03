@@ -12,8 +12,8 @@
     <!-- Small Progress Bar -->
     <div
       :aria-label="t('apiKeys.limitBadge.smallProgressBar')"
-      :title="t('apiKeys.limitBadge.smallProgressBar')"
       class="h-1 w-12 rounded-full bg-gray-200 dark:bg-gray-600"
+      :title="t('apiKeys.limitBadge.smallProgressBar')"
     >
       <div
         class="h-1 rounded-full transition-all duration-300"
