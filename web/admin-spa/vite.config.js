@@ -14,6 +14,15 @@ export default defineConfig(({ mode }) => {
   // 使用环境变量配置基础路径，如果未设置则使用默认值
   const basePath = env.VITE_APP_BASE_URL || (mode === 'development' ? '/admin/' : '/admin-next/')
 
+  // 获取默认语言并映射到正确的 lang 代码
+  const defaultLocale = env.VITE_DEFAULT_LOCALE || 'ru'
+  const langMap = {
+    ru: 'ru',
+    en: 'en',
+    zh: 'zh-CN'
+  }
+  const htmlLang = langMap[defaultLocale] || 'ru'
+
   // 创建代理配置
   const proxyConfig = {
     target: apiTarget,
@@ -33,11 +42,19 @@ export default defineConfig(({ mode }) => {
   console.log(
     `${mode === 'development' ? 'Starting dev server' : 'Building'} with base path: ${basePath}`
   )
+  console.log(`Using locale: ${defaultLocale} (HTML lang: ${htmlLang})`)
 
   return {
     base: basePath,
     plugins: [
       vue(),
+      // Плагин для замены %LANG% в index.html на правильное значение
+      {
+        name: 'html-transform',
+        transformIndexHtml(html) {
+          return html.replace('%LANG%', htmlLang)
+        }
+      },
       checker({
         eslint: {
           lintCommand: 'eslint "./src/**/*.{js,vue}" --cache=false',

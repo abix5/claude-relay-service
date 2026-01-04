@@ -1,7 +1,7 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import ElementPlus from 'element-plus'
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import i18n from './i18n'
 import en from 'element-plus/dist/locale/en.mjs'
 import ru from 'element-plus/dist/locale/ru.mjs'
@@ -26,6 +26,24 @@ app.use(router)
 
 // 使用i18n
 app.use(i18n)
+
+// 映射 locale 到标准 lang 代码
+const langMap = {
+  ru: 'ru',
+  en: 'en',
+  zh: 'zh-CN'
+}
+
+// 设置初始 HTML lang 属性
+document.documentElement.lang = langMap[i18n.global.locale.value] || 'ru'
+
+// 监听 locale 变化，动态更新 HTML lang 属性
+watch(
+  () => i18n.global.locale.value,
+  (newLocale) => {
+    document.documentElement.lang = langMap[newLocale] || 'ru'
+  }
+)
 
 // Element Plus本地化映射
 const elementLocaleMap = {
